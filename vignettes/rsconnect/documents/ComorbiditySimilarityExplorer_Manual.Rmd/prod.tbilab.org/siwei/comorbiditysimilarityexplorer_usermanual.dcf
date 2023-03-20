@@ -1,0 +1,14 @@
+name: comorbiditysimilarityexplorer_usermanual
+title: ComorbiditySimilarityExplorer_UserManual
+username: siwei
+account: siwei
+server: prod.tbilab.org
+hostUrl: https://prod.tbilab.org/__api__
+appId: 465
+bundleId: 1935
+url: https://prod.tbilab.org/content/6ed3c060-3a6d-422f-8724-f4959a532635/
+when: 1675783682.06478
+lastSyncTime: 1675783682.06479
+asMultiple: TRUE
+asStatic: FALSE
+ignoredFiles: explore_across_institutions.Rmd

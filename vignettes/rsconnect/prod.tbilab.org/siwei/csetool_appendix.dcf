@@ -1,0 +1,14 @@
+name: csetool_appendix
+title:
+username: siwei
+account: siwei
+server: prod.tbilab.org
+hostUrl: https://prod.tbilab.org/__api__
+appId: 487
+bundleId: 2014
+url: https://prod.tbilab.org/content/b81d6545-cba5-48f6-9bc8-11088fc1a0c1/
+when: 1678426929.22431
+lastSyncTime: 1678426929.22432
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: explore_across_institutions.Rmd

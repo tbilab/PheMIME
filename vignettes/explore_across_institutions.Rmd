@@ -1,0 +1,371 @@
+---
+title: "explore across institutions"
+author: "Siwei Zhang"
+date: <small>`r Sys.Date()`</small>
+output:
+  html_document
+    # thumbnails: no
+    # # lightbox: true
+    # gallery: no
+    # highlight: tango
+    # use_bookdown: no
+    # toc_depth: 6
+    # # fig_caption: yes
+    # embed_fonts: no
+    # keep_md: false
+    # number_sections: true
+    toc: yes
+    # toc_float:
+    #   collapsed: yes
+    #   smooth_scroll: yes
+    # code_folding: hide
+---
+
+# UKBB vs Vandy vs MGH comorbidities
+
+```{r compare,echo = FALSE,cache=FALSE, warning=FALSE,message=FALSE}
+library(tidyverse)
+library(phewasHelper)
+#clean up ukbb total regresion results
+ukbb_regression = aws.s3::s3readRDS(bucket="ukb.tbilab",object = "phenome/UKBB_regression_results_total.rds") %>%
+  map_dfr('result') %>%
+  filter(overlap > 0,
+         abs(z_a) < 5000,
+         abs(z_b) < 5000) %>%
+  mutate(z_avg_ukbb=(z_a + z_b)/2,
+         p_val_ukbb=pmax(p_val_a,p_val_b)) %>%
+  rename(overlap_ukbb=overlap)
+aws.s3::s3saveRDS(x=ukbb_regression,bucket="ukb.tbilab",
+object = "phenome/UKBB_regression_results_total_cleanup.rds",multipart = TRUE)
+ukbb_regression = aws.s3::s3readRDS(bucket="ukb.tbilab",object = "phenome/UKBB_regression_results_total_cleanup.rds")
+
+#read 250K Vandy and 250K MGH
+vandy_regression = readRDS("~/cross_institutions_multimorbidity/regression_running/parsed_job_results_250k.rds") %>%
+  filter(
+      abs(z_a) < 5000,   # Some MGH results have crazy outliers
+      abs(z_b) < 5000,   
+      overlap > 0        # Some MGH results also managed to run regression with zero overlaps
+    ) %>%
+  mutate(z_avg_vandy=(z_a + z_b)/2,
+         p_val_vandy=pmax(p_val_a,p_val_b)) %>%
+  rename(overlap_vandy=overlap)
+
+standarize_datasets <- . %>% 
+  mutate(phecode_a = normalize_phecodes(phecode_a),
+         phecode_b = normalize_phecodes(phecode_b),
+         z_avg_mgh = (z_a + z_b)/2,
+         p_val_mgh=pmax(p_val_a,p_val_b))
+mgh_regression <- readRDS("~/cross_institutions_multimorbidity/intermediate_data/mgh_raw_results.rds") %>%
+  mutate(
+    a_count = as.integer(ovlp / pct1),
+    b_count = as.integer(ovlp / pct2)
+  ) %>% 
+  select(
+    phecode_a = x.code, 
+    phecode_b = y.code,
+    z_a = zval1,
+    z_b = zval2,
+    beta_a = est1,
+    beta_b = est2,
+    overlap_mgh = ovlp,
+    a_count,
+    b_count,
+    p_val_a = pval1,
+    p_val_b = pval2
+  ) %>% 
+  standarize_datasets() %>%
+  filter(
+      abs(z_a) < 5000,   # Some MGH results have crazy outliers
+      abs(z_b) < 5000,   
+      overlap_mgh > 0       # Some MGH results also managed to run regression with zero overlaps
+    )
+
+all_dat = vandy_regression %>%
+  mutate(a=ifelse(as.numeric(phecode_a)<as.numeric(phecode_b),phecode_a,phecode_b),
+         b=ifelse(as.numeric(phecode_a)<as.numeric(phecode_b),phecode_b,phecode_a),
+         beta_avg_vandy=(beta_a+beta_b)/2) %>%
+  dplyr::select(a,b,z_avg_vandy,beta_avg_vandy,p_val_vandy,overlap_vandy) %>%
+  left_join(.,ukbb_regression %>% 
+              mutate(a=ifelse(as.numeric(phecode_a)<as.numeric(phecode_b),phecode_a,phecode_b),
+         b=ifelse(as.numeric(phecode_a)<as.numeric(phecode_b),phecode_b,phecode_a),
+         beta_avg_ukbb=(beta_a+beta_b)/2) %>%
+           dplyr::select(a,b,z_avg_ukbb,beta_avg_ukbb,p_val_ukbb,overlap_ukbb),by=c("a","b")) %>%
+  left_join(.,mgh_regression %>% 
+              mutate(a=ifelse(as.numeric(phecode_a)<as.numeric(phecode_b),phecode_a,phecode_b),
+         b=ifelse(as.numeric(phecode_a)<as.numeric(phecode_b),phecode_b,phecode_a),
+         beta_avg_mgh=(beta_a+beta_b)/2) %>%
+           dplyr::select(a,b,z_avg_mgh,beta_avg_mgh,p_val_mgh,overlap_mgh),by=c("a","b")) %>%
+  mutate(p_vandy_ukbb_max = pmax(p_val_vandy,p_val_ukbb),
+         p_vandy_mgh_max = pmax(p_val_vandy,p_val_mgh),
+         p_mgh_ukbb_max = pmax(p_val_mgh,p_val_ukbb),
+         p_vandy_mgh_ukbb_max = pmax(p_val_vandy,p_val_ukbb,p_val_mgh)) %>%
+  mutate(z_vandy_ukbb_combined = (z_avg_ukbb*overlap_ukbb+z_avg_vandy*overlap_vandy)/(overlap_ukbb+overlap_vandy),
+         z_vandy_mgh_combined = (z_avg_mgh*overlap_mgh+z_avg_vandy*overlap_vandy)/(overlap_mgh+overlap_vandy),
+         z_mgh_ukbb_combined = (z_avg_ukbb*overlap_ukbb+z_avg_mgh*overlap_mgh)/(overlap_ukbb+overlap_mgh),
+         z_combined_vandy_mgh_ukbb = (z_avg_ukbb*overlap_ukbb+z_avg_mgh*overlap_mgh+z_avg_vandy*overlap_vandy)/(overlap_ukbb+overlap_mgh+overlap_vandy)) %>%
+  rename(phecode=a) %>%
+            left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+            rename(a=description) %>%
+            dplyr::select(-phecode) %>%
+            rename(phecode=b) %>%
+            left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+            rename(b=description) %>%
+            dplyr::select(-phecode)
+
+save(all_dat, file="/home/siwei/cseToolkit/data/combined_vandy250K_mgh250K_ukbb.rda")
+
+  visualize_subgraph_structure(
+    association_pairs,
+    node_info = node_info,
+    subgraph_results = subgraphs,
+    trim_subgraph_results = TRUE
+    # ,
+    # pinned_node = "Calculus of kidney highlighted"
+  )
+
+
+ggplot(all_dat,aes(x=beta_avg_mgh,y=beta_avg_ukbb)) +
+  geom_point() +
+  coord_cartesian(xlim = c(-50, 150)) 
+
+
+# test %>%
+#     ggplot(aes(x = ukbb_z_avg, y = z_avg)) +
+#     geom_abline(slope = 1, alpha = 0.5) +
+#     geom_point(alpha = 0.5) +
+#     ggrepel::geom_label_repel(
+#       aes(label = label),
+#       color = "black",
+#       force = 10,
+#       min.segment.length = 0,
+#       segment.color = "black",
+#       show.legend = FALSE
+#     ) +
+#     # scale_fill_manual(
+#     #   values = c("Vanderbilt" = alpha(c(vandy_color),0.4),
+#     #              "MGH"        = alpha(c(mgh_color)  ,0.4))
+#     # ) +
+#     scale_color_phecode() +
+#     labs(
+#       x = glue("Vanderbilt {type}"),
+#       y = glue("MGH {type}"),
+#       fill = glue("More {str_remove(type,'ity')} in"),
+#       title = glue("{str_to_title(type)} with {code_id()} across systems"),
+#       subtitle = glue("Points above and below the diagonal line are more {str_remove(type,'ity')} in Vanderbilt or MGH's system respectively.")
+#     ) +
+#     theme_bw()+
+#     theme(
+#       # panel.border = element_blank(),
+#       axis.line = element_line(colour = "black"),
+#       legend.position = "right",
+#       axis.ticks.x = ggplot2::element_blank(),
+#       axis.text.x = ggplot2::element_blank(),
+#       panel.grid.major.x = ggplot2::element_blank(),
+#       panel.grid.minor.x = ggplot2::element_blank(),
+#       axis.ticks.y = ggplot2::element_blank(),
+#       axis.text.y = ggplot2::element_blank(),
+#       panel.grid.major.y = ggplot2::element_blank(),
+#       panel.grid.minor.y = ggplot2::element_blank()
+#     )
+
+
+
+
+
+```
+
+
+
+
+# Odds Ratio 
+
+```{r or,echo = FALSE,cache=FALSE, warning=FALSE,message=FALSE}
+# knitr::opts_chunk$set(echo = FALSE, include=F,out.width = "100%")
+library(dplyr)
+library(tidyverse)
+library(phewasHelper)
+library(associationsubgraphs)
+
+association_pairs = readRDS("all_comorbidity_phecodepairs_fisher_UKB.rds") 
+
+association_pairs = association_pairs %>%
+  dplyr::select(a,b,or) %>%
+  dplyr::rename(strength=or) %>%
+  mutate(strength=abs(log(strength))) %>%
+  filter(strength!=Inf) %>%
+  filter(strength!=-Inf) %>%
+  filter(strength!=0) %>%
+  # filter(is.nan(strength)) %>%
+  rename(phecode=a) %>%
+  left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+  rename(a=description) %>%
+  dplyr::select(-phecode) %>%
+  rename(phecode=b) %>%
+  left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+  rename(b=description) %>%
+  dplyr::select(-phecode) %>%
+  dplyr::select(a,b,strength) %>%
+  filter(!is.na(a)) %>%
+  filter(!is.na(b))
+
+subgraphs_2 <- association_pairs %>% calculate_subgraph_structure()
+
+node_info <- data.frame(id=unique(c(association_pairs$a,association_pairs$b))) %>%
+  left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
+  arrange(group)
+
+visualize_subgraph_structure(
+  association_pairs,
+  node_info = node_info,
+  subgraph_results = subgraphs,
+  trim_subgraph_results = TRUE
+  # pinned_node = "Calculus of kidney"
+)
+
+```
+
+# Odds Ratio (ties reordered)
+
+```{r or_reordered,echo = FALSE,cache=FALSE, warning=FALSE,message=FALSE}
+association_pairs = readRDS("all_comorbidity_phecodepairs_fisher_UKB.rds") 
+
+association_pairs = association_pairs %>%
+  dplyr::select(a,b,or) %>%
+  dplyr::rename(strength=or) %>%
+  mutate(strength=abs(log(strength))) %>%
+  filter(strength!=Inf) %>%
+  filter(strength!=-Inf) %>%
+  filter(strength!=0) %>%
+  rename(phecode=a) %>%
+  left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+  rename(a=description) %>%
+  dplyr::select(-phecode) %>%
+  rename(phecode=b) %>%
+  left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+  rename(b=description) %>%
+  dplyr::select(-phecode) %>%
+  dplyr::select(a,b,strength) %>%
+  filter(!is.na(a)) %>%
+  filter(!is.na(b))
+
+##change order to increasing order prior to use built-in order function
+association_pairs = association_pairs[sample(nrow(association_pairs)),]
+##test
+# desc_strengths <- -association_pairs[["strength"]]
+# association_pairs = association_pairs[order(desc_strengths),]
+
+subgraphs <- association_pairs %>% calculate_subgraph_structure()
+
+node_info <- data.frame(id=unique(c(association_pairs$a,association_pairs$b))) %>%
+  left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
+  arrange(group)
+
+visualize_subgraph_structure(
+  association_pairs,
+  node_info = node_info,
+  subgraph_results = subgraphs,
+  trim_subgraph_results = TRUE
+  # pinned_node = "Calculus of kidney"
+)
+```
+
+
+# -log10(pvalue)
+
+```{r pvalue,echo = FALSE,cache=FALSE, warning=FALSE,message=FALSE}
+
+association_pairs = readRDS("all_comorbidity_phecodepairs_fisher_UKB.rds") 
+
+association_pairs = association_pairs %>%
+  dplyr::select(a,b,pvalue) %>%
+  mutate(strength=-log10(pvalue)) %>%
+  dplyr::select(-pvalue) %>%
+  filter(strength!=Inf) %>%
+  filter(strength!=-Inf) %>%
+  filter(strength!=0) %>%
+  # filter(!is.na(strength)) %>%
+  # filter(strength>0) %>%
+  rename(phecode=a) %>%
+  left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+  rename(a=description) %>%
+  dplyr::select(-phecode) %>%
+  rename(phecode=b) %>%
+  left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+  rename(b=description) %>%
+  dplyr::select(-phecode) %>%
+  dplyr::select(a,b,strength) %>%
+  filter(!is.na(a)) %>%
+  filter(!is.na(b))
+
+subgraphs <- association_pairs %>% calculate_subgraph_structure()
+
+node_info <- data.frame(id=unique(c(association_pairs$a,association_pairs$b))) %>%
+  left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
+  arrange(group)
+
+visualize_subgraph_structure(
+  association_pairs,
+  node_info = node_info,
+  subgraph_results = subgraphs
+  # trim_subgraph_results = TRUE,
+  # pinned_node = "Calculus of kidney"
+)
+
+```
+
+# z score
+
+```{r zscore,echo = FALSE,cache=FALSE, warning=FALSE,message=FALSE}
+association_pairs = readRDS("all_comorbidity_phecodepairs_fisher_UKB.rds") 
+
+association_pairs = association_pairs %>%
+  dplyr::select(a,b,pvalue) %>%
+  mutate(strength=qnorm(pvalue,lower.tail = F)) %>%
+  dplyr::select(-pvalue) %>%
+  filter(strength!=Inf) %>%
+  filter(strength!=-Inf) %>%
+  filter(strength!=0) %>%
+  # filter(is.nan(strength)) %>%
+  rename(phecode=a) %>%
+  left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+  rename(a=description) %>%
+  dplyr::select(-phecode) %>%
+  rename(phecode=b) %>%
+  left_join(.,phecode_def[,c("phecode","description")],by="phecode") %>%
+  rename(b=description) %>%
+  dplyr::select(-phecode) %>%
+  dplyr::select(a,b,strength) %>%
+  filter(!is.na(a)) %>%
+  filter(!is.na(b))
+
+subgraphs <- association_pairs %>% calculate_subgraph_structure()
+
+node_info <- data.frame(id=unique(c(association_pairs$a,association_pairs$b))) %>%
+  left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
+  arrange(group)
+
+visualize_subgraph_structure(
+  association_pairs,
+  node_info = node_info,
+  subgraph_results = subgraphs
+  # trim_subgraph_results = TRUE,
+  # pinned_node = "Calculus of kidney"
+)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
