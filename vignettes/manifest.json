@@ -1075,14 +1075,14 @@
     "_site/explore_plot_inf.png": {
       "checksum": "4b9b4d58ac1a9134107a4e3f896144a6"
     },
-    "_site/index.html": {
-      "checksum": "2fc53121e14b6c323f409b156075e38c"
-    },
     "_site/introduction_page.png": {
       "checksum": "993f4f5fe8afaa5430efda8493a17204"
     },
     "_site/introduction.html": {
       "checksum": "6698134078e50ef269d0b9cecaa7bf4e"
+    },
+    "_site/manifest.json": {
+      "checksum": "9c6f2e232ce84dfe6e859e835929d223"
     },
     "_site/multimorbidity_network_overall_sch.png": {
       "checksum": "493b0aa78e0ab8f086b80febeff42928"
@@ -1098,9 +1098,6 @@
     },
     "_site/multimorbidity_overall_psy.png": {
       "checksum": "f3f2e17d0a3a6b9318699847a5bad62e"
-    },
-    "_site/overview.html": {
-      "checksum": "bb36865a04e9f1f5f481ec897cb999a1"
     },
     "_site/sch_manhattan.png": {
       "checksum": "f3272cd9963390abeffab7556494deb3"
@@ -1297,9 +1294,6 @@
     "_site/style.css": {
       "checksum": "59606d93da9507a08b8846d11dc7d366"
     },
-    "_site/usage_example.html": {
-      "checksum": "f3ca8b7070d22163bdc5359558fefdbf"
-    },
     "comorbidity_network_overall.png": {
       "checksum": "ce7ba4b959c300f77cb1986b0f4b6e78"
     },
@@ -1330,6 +1324,9 @@
     "explore_plot_inf.png": {
       "checksum": "4b9b4d58ac1a9134107a4e3f896144a6"
     },
+    "index.html": {
+      "checksum": "2fc53121e14b6c323f409b156075e38c"
+    },
     "index.Rmd": {
       "checksum": "aa3f320dd1851c3ec9b98a0a98e29d7f"
     },
@@ -1351,6 +1348,9 @@
     "multimorbidity_overall_psy.png": {
       "checksum": "f3f2e17d0a3a6b9318699847a5bad62e"
     },
+    "overview.html": {
+      "checksum": "bb36865a04e9f1f5f481ec897cb999a1"
+    },
     "overview.Rmd": {
       "checksum": "26107ed7e7ef4075d8f83797f27e2769"
     },
@@ -1362,6 +1362,9 @@
     },
     "style.css": {
       "checksum": "59606d93da9507a08b8846d11dc7d366"
+    },
+    "usage_example.html": {
+      "checksum": "f3ca8b7070d22163bdc5359558fefdbf"
     },
     "usage_example.Rmd": {
       "checksum": "7867c117ea5db92efe766deea37a6240"
