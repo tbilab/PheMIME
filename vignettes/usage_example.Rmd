@@ -3,18 +3,18 @@ title: "Multi-Institutional Disease Multimorbidity Explorer Usage Example"
 author: Siwei Zhang
 date: "`r Sys.Date()`"
 output:
-    rmdformats::downcute:
-    style_switcher: false
-    thumbnails: no
-    lightbox: yes
-    gallery: no
-    highlight: tango
-    use_bookdown: no
-    toc_depth: 6
-    fig_caption: yes
-    embed_fonts: no
-    keep_md: no
-    number_sections: yes
+  rmdformats::downcute:
+  style_switcher: false
+  thumbnails: no
+  lightbox: yes
+  gallery: no
+  highlight: tango
+  use_bookdown: no
+  toc_depth: 6
+  fig_caption: yes
+  embed_fonts: no
+  keep_md: no
+  number_sections: yes
 ---
 <!-- <style type="text/css"> -->
 <!-- .main-container { -->
