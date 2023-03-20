@@ -49,7 +49,7 @@ The manuscript is available on MedRxiv.
 
 ## Shiny app
 
-The mdmTool is available at https://prod.tbilab.org/Cross_institution_multimorbidities/.
+The mdmTool is available at https://prod.tbilab.org/content/e7b2587f-fbe3-41d8-b878-705a731a33e8.
 
 ## Reference
 

@@ -1,12 +1,12 @@
-source("load_libraries.R")
-# source("data_loading.R")
-source("data_table.R")
-source("overview_consistency.R")
-source("comorbidity_network.R")
-source("annotation_module.R")
-source("manhattan_plot.R")
-source("scatter_plot.R")
-source("comorbidity_subnetwork.R")
+source("modules/load_libraries.R")
+source("modules/data_loading.R")
+source("modules/data_table.R")
+source("modules/overview_consistency.R")
+source("modules/comorbidity_network.R")
+source("modules/annotation_module.R")
+source("modules/manhattan_plot.R")
+source("modules/scatter_plot.R")
+source("modules/comorbidity_subnetwork.R")
 
 
 

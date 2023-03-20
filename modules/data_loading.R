@@ -1,8 +1,7 @@
-source("load_libraries.R")
-
-# load("combined_vandy250K_mgh250K_ukbb.rda")
-load("phecode_def.rda")
-load("phecode_descriptions.rda")
+source("modules/load_libraries.R")
+load("data/combined_vandy250K_mgh250K_ukbb.rda")
+load("data/phecode_def.rda")
+load("data/phecode_descriptions.rda")
 # load("subgraphs.rda")
 # load("node_info.rda")
 

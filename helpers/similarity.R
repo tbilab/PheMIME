@@ -1,5 +1,4 @@
 library(tidyverse)
-library(phewasHelper)
 library(here)
 library(magrittr)
 library(furrr)

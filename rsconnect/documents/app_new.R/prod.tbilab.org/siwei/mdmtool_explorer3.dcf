@@ -1,0 +1,14 @@
+name: mdmtool_explorer3
+title: mdmTool_explorer
+username: siwei
+account: siwei
+server: prod.tbilab.org
+hostUrl: https://prod.tbilab.org/__api__
+appId: 493
+bundleId: 2028
+url: https://prod.tbilab.org/content/b0c755a0-3cf9-4cfd-8509-4f3027dc01f2/
+when: 1679282489.52818
+lastSyncTime: 1679282489.52819
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: helpers

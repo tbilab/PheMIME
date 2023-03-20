@@ -1,0 +1,14 @@
+name: mdmtool_explorer5
+title: mdmTool_explorer
+username: siwei
+account: siwei
+server: prod.tbilab.org
+hostUrl: https://prod.tbilab.org/__api__
+appId: 495
+bundleId: 2031
+url: https://prod.tbilab.org/content/e7b2587f-fbe3-41d8-b878-705a731a33e8/
+when: 1679282867.63769
+lastSyncTime: 1679282867.6377
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: README.md|helpers|vignettes
