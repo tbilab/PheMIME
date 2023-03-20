@@ -1,0 +1,14 @@
+name: "Multi-Institutional Disease Multimorbidity Explorer"
+navbar:
+  title: "Multi-Institutional Disease Multimorbidity Explorer"
+  type: inverse
+  left:
+    - text: "Appendix: Detailed Overview"
+      href: overview.html
+    - text: "Appendix: Usage example"
+      href: usage_example.html
+output:
+  html_document:
+    theme: paper
+    css: style.css
+

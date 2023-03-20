@@ -1,0 +1,89 @@
+---
+title: "Multi-Institutional Disease Multimorbidity Explorer"
+author: Siwei Zhang
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+  style_switcher: false
+  thumbnails: no
+  lightbox: yes
+  gallery: no
+  highlight: tango
+  use_bookdown: no
+  toc_depth: 6
+  fig_caption: yes
+  embed_fonts: no
+  keep_md: no
+  number_sections: yes
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+embed_png <- function(image_title, width = "100%") {
+  knitr::asis_output(
+    glue::glue("<div style=\"text-align: center;\">",
+                 "<img src=\"{image_title}\" width={width} />",
+               "</div>")
+  )
+}
+```
+
+```{r, echo = FALSE}
+embed_png("introduction_page.png")
+```
+
+## Motivation
+
+Phenome-based disease multimorbidity derived from EHR is becoming essentially important in precision medicine. It is useful to prevent multimorbid conditions and provide evidence-based treatment to patients by finding pathogenesis of disease, providing insights for disease prognosis and identifying underlying shared molecular mechanisms. And identifying disease multimorbidity provides a new opportunities of clinical trials design and drug repurposing by recruiting patients with complex disease profiles that more closely resembles the real-world and using single drug to treat multiple conditions concurrently. However, most of the previous studies focus on a single EHR system due to the limitation of sharing individual-level data across different EHR systems and there lacks a common visualization tool to conduct statistical analysis and make inference on latent structure of disease multimorbidity clustering and causation. In this research, we aim to develop a visualization tool that can be used by clinicians and researchers to explore multimorbidity in EHR data from multiple institutions. The tool will be able to visualize the reproducibility of multimorbidity across different EHR systems and identify the latent disease multimorbidity clustering and causation given the condition of statistical significance. 
+
+## Results
+
+We present Multi-Institutional Disease Multimorbidity Explorer (mdmTool) which is an interactive visualization tool of phenome-based disease network. By utilizing summary statistics from association analysis to represent the disease multimorbidity strength, a database was collected and computed from association analysis across three institutions: Vanderbilt University Medical Center, Massachusetts General Brigham, and UK Biobank. By framing the association analysis of disease multimorbidity as a network problem, it allows the analysis and inference of the latent disease phenotypes clustering, which extends the pairwise multimorbidity to the multivariate disease clusters. The tool takes an input from the selection of the interested disease phenotype and generates plots interactive with the table that either display the pairwise multimorbidity strength within single system or show the consistency of multimorbidity across systems, which gives users the freedom choosing disease phenotypes based on prior knowledge or doing analysis of adding or removing disease phenotypes according to the discovery by associationSubgraphs. The new version of associationSubgraphs embedded into the tool interactive with plots and tables allows tracking the trajectory of forming disease multimorbidity. Finally, the implementation with a use-case in Schizophrenia is demonstrated.
+
+## Manuscript
+
+The manuscript is available on MedRxiv.
+
+## Shiny app
+
+The mdmTool is available at https://prod.tbilab.org/content/e7b2587f-fbe3-41d8-b878-705a731a33e8.
+
+## Reference
+
+Aguado,A. et al. (2020) MorbiNet: multimorbidity networks in adult general population. Analysis of type 2 diabetes mellitus comorbidity. Sci Rep, 10, 2416.
+
+Bastarache,L. et al. (2022) Phenome-Wide Association Studies. JAMA, 327, 75.
+
+Bojko,A. (2009) Informative or misleading? Heatmaps deconstructed. In, Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)., pp. 30–39.
+
+Hassaine,A. et al. (2020) Learning multimorbidity patterns from electronic health records using Non-negative Matrix Factorisation. J Biomed Inform, 112, 103606.
+
+Kuan,V. et al. (2023) Identifying and visualising multimorbidity and comorbidity patterns in patients in the English National Health Service: a population-based study. Lancet Digit Health, 5, e16–e27.
+
+Chong,L.W. et al. (2018) Association of viral hepatitis and bipolar disorder: A nationwide population-based study. J Transl Med, 16.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
