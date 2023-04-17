@@ -1,3 +1,5 @@
+library(here)
+setwd(here())
 source("modules/load_libraries.R")
 source("modules/data_loading.R")
 source("modules/data_table.R")
@@ -7,7 +9,6 @@ source("modules/annotation_module.R")
 source("modules/manhattan_plot.R")
 source("modules/scatter_plot.R")
 source("modules/comorbidity_subnetwork.R")
-
 
 
 starting_code <- "295.10"
@@ -79,20 +80,20 @@ ui <- navbarPage(div(strong("Multi-Institutional Disease Multimorbidity Explorer
 
                  #2nd tab content
                  tabPanel(
-                   strong("Compare Comorbidity Consistency"),
+                   strong("Compare Multimorbidity Consistency"),
                    consistency("comorbidity_consistency")
                  ),
                  #==================================================================================
 
                  #3rd tab content
                  tabPanel(
-                   strong("Visualize Comorbidity Network"),
+                   strong("Visualize Multimorbidity Network"),
                    comorbidity_networkPlot("comorbidity_network")
                  ),
                  #==================================================================================
                  #4th tab content
                  tabPanel(
-                   strong("Explore Comorbidity"),
+                   strong("Explore Multimorbidity"),
                    annotationPlot("comorbidity")
                  ),
                  #==================================================================================

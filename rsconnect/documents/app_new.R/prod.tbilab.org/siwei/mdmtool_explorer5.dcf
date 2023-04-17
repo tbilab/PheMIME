@@ -5,10 +5,10 @@ account: siwei
 server: prod.tbilab.org
 hostUrl: https://prod.tbilab.org/__api__
 appId: 495
-bundleId: 2031
-url: https://prod.tbilab.org/content/e7b2587f-fbe3-41d8-b878-705a731a33e8/
-when: 1679282867.63769
-lastSyncTime: 1679282867.6377
+bundleId: 2133
+url: https://prod.tbilab.org/Multi-Institutional_Disease_Multimorbidity_Explorer/
+when: 1681749421.7154
+lastSyncTime: 1681749421.71541
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: README.md|helpers|vignettes
+ignoredFiles: manhattan1.png|manhattan2.png|manhattan3.png|README.html|README.md|scatter1.png|scatter2.png|scatter3.png|helpers

@@ -118,7 +118,7 @@ annotationPlot <- function(id) {
                         downloadButton(ns("manhattan3"))
                  ),
                  column(6,
-                        withSpinner(plotOutput(ns("plot2_ngh_ukbb"),width='700px',height = "600px",
+                        withSpinner(plotOutput(ns("plot2_mgh_ukbb"),width='700px',height = "600px",
                                                click = ns("point_click"),
                                                hover = hoverOpts(id=ns("point_hover")),
                                                brush = brushOpts(id=ns("point_brush")))),
@@ -302,7 +302,13 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       #===============================================
       #vandy & mgh
       code_data_vandy_mgh = reactive({code_data() %>% drop_na(z_vandy_mgh) %>% arrange(desc(z_vandy_mgh))})
-
+      table_data1 = reactive({
+        code_data_vandy_mgh() %>%
+          dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
+                        glue("{(type_label)}_mgh"),
+                        glue("{(type_label)}_ukbb")) %>%
+          mutate(across(4:6, round, 3))
+      })
       output$plot1_vandy_mgh <- renderPlot({
 
         if(nrow(code_data_vandy_mgh())!=0){
@@ -412,7 +418,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       })
 
       code_data_mgh_ukbb = reactive({code_data() %>% drop_na(z_mgh_ukbb) %>% arrange(desc(z_mgh_ukbb))})
-      table_data1 = reactive({code_data_vandy_mgh() %>%
+      table_data3 = reactive({code_data_mgh_ukbb() %>%
           dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
                         glue("{(type_label)}_mgh"),
                         glue("{(type_label)}_ukbb")) %>%
@@ -471,13 +477,6 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       #===============================================
       ##table output of selected phecodes
       #===============================================
-      table_data1 = reactive({
-        code_data_vandy_mgh() %>%
-          dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
-                        glue("{(type_label)}_mgh"),
-                        glue("{(type_label)}_ukbb")) %>%
-          mutate(across(4:6, round, 3))
-        })
 
       selected_rows1 <- reactive({
         if(length(annotated_points()>1)){
