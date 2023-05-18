@@ -27,7 +27,7 @@ annotationPlot <- function(id) {
       ## 1st tab
       tabPanel("VUMC vs MGB",
         fluidRow(
-        column(6,withSpinner(plotOutput(ns("plot1_vandy_mgh"),width="700px",height="600px",
+        column(6,withSpinner(plotOutput(ns("plot1_vandy_mgh"),width="600px",height="600px",
                                               click = clickOpts(ns("point_click")),
                                               dblclick = dblclickOpts(ns("point_dblclick")),
                                               hover = hoverOpts(id=ns("point_hover")),
@@ -35,7 +35,7 @@ annotationPlot <- function(id) {
                downloadButton(ns("manhattan1"))
               ),
         column(6,
-               withSpinner(plotOutput(ns("plot2_vandy_mgh"),width='700px',height = "600px",
+               withSpinner(plotOutput(ns("plot2_vandy_mgh"),width='600px',height = "600px",
                                       click = ns("point_click"),
                                       hover = hoverOpts(id=ns("point_hover")),
                                       brush = brushOpts(id=ns("point_brush")))),
@@ -61,14 +61,15 @@ annotationPlot <- function(id) {
                         column(12,div(actionButton(ns("update_subgraph_vandy_mgh"), "Update associationsubgraphs"),
                                       style="float:right")),
                         column(12,div(style = "height:30px")),
-                        column(12,uiOutput(ns("spinner1")))))
+                        column(12,uiOutput(ns("spinner1"))
+                               )))
            )
         )
       ), #tabPanel
 
       tabPanel("VUMC vs UKB",
                fluidRow(
-                 column(6,withSpinner(plotOutput(ns("plot1_vandy_ukbb"),width="700px",height="600px",
+                 column(6,withSpinner(plotOutput(ns("plot1_vandy_ukbb"),width="600px",height="600px",
                                                      click = clickOpts(ns("point_click")),
                                                      dblclick = dblclickOpts(ns("point_dblclick")),
                                                      hover = hoverOpts(id=ns("point_hover")),
@@ -76,7 +77,7 @@ annotationPlot <- function(id) {
                         downloadButton(ns("manhattan2"))
                  ),
                  column(6,
-                        withSpinner(plotOutput(ns("plot2_vandy_ukbb"),width='700px',height = "600px",
+                        withSpinner(plotOutput(ns("plot2_vandy_ukbb"),width='600px',height = "600px",
                                                click = ns("point_click"),
                                                hover = hoverOpts(id=ns("point_hover")),
                                                brush = brushOpts(id=ns("point_brush")))),
@@ -110,7 +111,7 @@ annotationPlot <- function(id) {
 
       tabPanel("MGB vs UKB",
                fluidRow(
-                 column(6,withSpinner(plotOutput(ns("plot1_mgh_ukbb"),width="700px",height="600px",
+                 column(6,withSpinner(plotOutput(ns("plot1_mgh_ukbb"),width="600px",height="600px",
                                                  click = clickOpts(ns("point_click")),
                                                  dblclick = dblclickOpts(ns("point_dblclick")),
                                                  hover = hoverOpts(id=ns("point_hover")),
@@ -118,7 +119,7 @@ annotationPlot <- function(id) {
                         downloadButton(ns("manhattan3"))
                  ),
                  column(6,
-                        withSpinner(plotOutput(ns("plot2_mgh_ukbb"),width='700px',height = "600px",
+                        withSpinner(plotOutput(ns("plot2_mgh_ukbb"),width='600px',height = "600px",
                                                click = ns("point_click"),
                                                hover = hoverOpts(id=ns("point_hover")),
                                                brush = brushOpts(id=ns("point_brush")))),
@@ -216,35 +217,60 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       ##watch for subnetwork button click
       #===============================================
       observeEvent(input$update_subgraph_vandy_mgh,{
-        output$spinner1 = renderUI({
-          withSpinner(r2d3::d3Output(session$ns("plot3_vandy_mgh"),width = "100%", height = "690px"))
-        })
+      
         output$plot3_vandy_mgh <- r2d3::renderD3({
-          Sys.sleep(3)
-          comorbidity_subnetwork(com_sim,isolate(annotated_points()),
+          withProgress(message = "",
+                       value=0,{
+          incProgress(0.5,detail = "associationubgraph is running")               
+          subgraph = comorbidity_subnetwork(com_sim,isolate(annotated_points()),
                                  paste0(glue("{(type_label)}_vandy_mgh")),code_description)
+          incProgress(0.4, detail = "Nearly done, subgraphs will show in 10 seconds!")
+          Sys.sleep(5)
+          })
+          subgraph
+        })
+        
+        output$spinner1 = renderUI({
+          withSpinner(r2d3::d3Output(session$ns("plot3_vandy_mgh"),width = "100%", height = "690px"),
+                      hide.ui = FALSE)
         })
       })
 
       observeEvent(input$update_subgraph_vandy_ukbb,{
-        output$spinner2 = renderUI({
-          withSpinner(r2d3::d3Output(session$ns("plot3_vandy_ukbb"),width = "100%", height = "690px"))
-        })
         output$plot3_vandy_ukbb <- r2d3::renderD3({
-          Sys.sleep(3)
-          comorbidity_subnetwork(com_sim,isolate(annotated_points()),
-                                 paste0(glue("{(type_label)}_vandy_ukbb")),code_description)
+          withProgress(message = "associationubgraph is running",
+                       value=0,{
+                         incProgress(0.5,detail = "associationubgraph is running")                
+                         subgraph = comorbidity_subnetwork(com_sim,isolate(annotated_points()),
+                                                           paste0(glue("{(type_label)}_vandy_ukbb")),code_description)
+                         incProgress(0.4, detail = "Nearly done, subgraphs will show in 10 seconds!")
+                         Sys.sleep(5)
+                       })
+          subgraph
+        })
+        
+        output$spinner2 = renderUI({
+          withSpinner(r2d3::d3Output(session$ns("plot3_vandy_ukbb"),width = "100%", height = "690px"),
+                      hide.ui = FALSE)
         })
       })
 
       observeEvent(input$update_subgraph_mgh_ukbb,{
-        output$spinner3 = renderUI({
-          withSpinner(r2d3::d3Output(session$ns("plot3_mgh_ukbb"),width = "100%", height = "690px"))
-        })
         output$plot3_mgh_ukbb <- r2d3::renderD3({
-          Sys.sleep(3)
-          comorbidity_subnetwork(com_sim,isolate(annotated_points()),
-                                 paste0(glue("{(type_label)}_mgh_ukbb")),code_description)
+          withProgress(message = "associationubgraph is running",
+                       value=0,{
+                         incProgress(0.5,detail = "associationubgraph is running")                
+                         subgraph = comorbidity_subnetwork(com_sim,isolate(annotated_points()),
+                                                           paste0(glue("{(type_label)}_mgh_ukbb")),code_description)
+                         incProgress(0.4, detail = "Nearly done, subgraphs will show in 10 seconds!")
+                         Sys.sleep(5)
+                       })
+          subgraph
+        })
+        
+        output$spinner3 = renderUI({
+          withSpinner(r2d3::d3Output(session$ns("plot3_mgh_ukbb"),width = "100%", height = "690px"),
+                      hide.ui = FALSE)
         })
       })
 

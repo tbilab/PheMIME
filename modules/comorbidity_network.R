@@ -49,7 +49,8 @@ comorbidity_networkPlot = function(id){
         condition = "input.update_network > 0",
         style = "display: none;",
         ns=ns,
-        withSpinner(r2d3::d3Output(ns("comorbidity_network_plot"),width = "100%", height = "550px"))
+        withSpinner(r2d3::d3Output(ns("comorbidity_network_plot"),width = "100%", height = "550px"),
+                    hide.ui = FALSE)
       )
     # )
     )
@@ -231,23 +232,32 @@ comorbidity_networkServer = function(id,code_description,code_id) {
       })
 
         output$comorbidity_network_plot = r2d3::renderD3({
-          Sys.sleep(3)
-           if(code_description() %in% unique(c(selectedData()[["association_pairs"]]$a,selectedData()[["association_pairs"]]$b))){
-             visualize_subgraph_structure(
-               selectedData()[["association_pairs"]],
-               node_info = selectedData()[["node_info"]],
-               subgraph_results = selectedData()[["subgraphs"]],
-               trim_subgraph_results = TRUE,
-               pinned_node = code_description()
-             )
-           } else{
-             visualize_subgraph_structure(
-               selectedData()[["association_pairs"]],
-               node_info = selectedData()[["node_info"]],
-               subgraph_results = selectedData()[["subgraphs"]],
-               trim_subgraph_results = TRUE
-             )
-           }
+          withProgress(message = "",
+                       value=0,{
+                        incProgress(0.5,detail = "associationubgraph is running")    
+                         
+                         if(code_description() %in% unique(c(selectedData()[["association_pairs"]]$a,selectedData()[["association_pairs"]]$b))){
+                          subgraph=visualize_subgraph_structure(
+                             selectedData()[["association_pairs"]],
+                             node_info = selectedData()[["node_info"]],
+                             subgraph_results = selectedData()[["subgraphs"]],
+                             trim_subgraph_results = TRUE,
+                             pinned_node = code_description()
+                           )
+                         } else{
+                          subgraph=visualize_subgraph_structure(
+                             selectedData()[["association_pairs"]],
+                             node_info = selectedData()[["node_info"]],
+                             subgraph_results = selectedData()[["subgraphs"]],
+                             trim_subgraph_results = TRUE
+                           )
+                         }
+                         # incProgress(0.3, detail = "Nearly done")
+                         # Sys.sleep(5)
+                         incProgress(0.4, detail = "Nearly done, subgraphs will show in 10 seconds!")
+                         Sys.sleep(5)
+                       })
+          subgraph
          })
 
         output$current_code_label <- renderText(glue("Current selection: {code_id()}"))
