@@ -15,7 +15,7 @@ starting_code <- "295.10"
 # Used in data table to both select correct row and navigate table to that row
 start_index <- which(phecodes$phecode == starting_code)
 
-ui <- navbarPage(div(strong("Multi-Institutional Disease Multimorbidity Explorer"),style="font-size: 2.2rem;"),
+ui <- navbarPage(div(strong("Phecode-wide Multi-Institutional Multimorbidity Explorer"),style="font-size: 2.2rem;"),
                  #color:#2c3e50
                  tags$style(HTML("
                             .navbar-default {background-color: #fff !important;font-size: 13px;}

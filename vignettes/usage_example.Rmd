@@ -1,5 +1,5 @@
 ---
-title: "Multi-Institutional Disease Multimorbidity Explorer Usage Example"
+title: "Phecode-wide Multi-Institutional Multimorbidity Explorer Usage Example"
 author: Siwei Zhang
 date: "`r Sys.Date()`"
 output:
@@ -107,7 +107,7 @@ embed_png("sch_manhattan.png")
 - The associationSubgraph incorporated with user-selected phenomes colored provides an interactive visualization method to quickly explore and make inference of the latent structure of disease clusters. By annotating the disease phenotypes in the static Manhattan/Scatter plot, the disease category and corresponding multimorbidity strengths in three institutions are highlighted in the table. Furthermore, a modified version of the associationSubgraph helps track the trajectory of forming the disease subgroups. The nodes which represent phenotypes in the network will be categorized into two groups with annotated phenomes colored by their disease categories and the other nodes without annotation colored into grey which makes the analysis and inference of disease multimorbidity into reality. By selecting the phenomes highly co-occurred with the interested disease and validating such phenomes that consistent across systems, the selected phenotypes might be clustered into separate subgroups, which represents different mechanisms. 
 
 ```{r,echo=FALSE}
-embed_png("explore_page.png")
+embed_png("overall.png")
 ```
 
 ### Schizophrenia
@@ -134,19 +134,7 @@ embed_png("digestive_table.png")
 embed_png("digestive_network.png")
 ```
 
-## Reference
 
-Aguado,A. et al. (2020) MorbiNet: multimorbidity networks in adult general population. Analysis of type 2 diabetes mellitus comorbidity. Sci Rep, 10, 2416.
-
-Bastarache,L. et al. (2022) Phenome-Wide Association Studies. JAMA, 327, 75.
-
-Bojko,A. (2009) Informative or misleading? Heatmaps deconstructed. In, Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)., pp. 30–39.
-
-Hassaine,A. et al. (2020) Learning multimorbidity patterns from electronic health records using Non-negative Matrix Factorisation. J Biomed Inform, 112, 103606.
-
-Kuan,V. et al. (2023) Identifying and visualising multimorbidity and comorbidity patterns in patients in the English National Health Service: a population-based study. Lancet Digit Health, 5, e16–e27.
-
-Chong,L.W. et al. (2018) Association of viral hepatitis and bipolar disorder: A nationwide population-based study. J Transl Med, 16.
 
 
 

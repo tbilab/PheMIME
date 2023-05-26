@@ -1,5 +1,5 @@
 ---
-title: "Multi-Institutional Disease Multimorbidity Explorer Detailed Overview"
+title: "Phecode-wide Multi-Institutional Multimorbidity Explorer Detailed Overview"
 author: Siwei Zhang
 date: "`r Sys.Date()`"
 output:
@@ -46,7 +46,6 @@ EHR-based observational studies are usually based on a single institution, while
 
 There lacks a common visualization tool to help conduct statistical analysis and make inference of the latent structure of disease multimorbidity clustering and causation. The limitation of sharing individual-level EHR data, technical computing resources, and ethical reasons challenges the research on creating and building a common standard visualization tool to better help the clinical discoveries. An efficient visualization tool based on large-scale database will provide a comprehensive and more valuable resource for validating known phenome-based multimorbidity and discovering unknown multimorbidity, and meanwhile could increase statistical power. Most EHR-based phenome-wide approaches focused on studying each phenotype independently, but our approach explored phenome-wide multimorbidity patterns leveraging large-scale EHR systems and our multimorbidity networks database provide deeper understanding of differences across institutions. 
 
-
 ## How to use this tool?
 
 ### Data integration for three institutions
@@ -78,25 +77,7 @@ embed_png("consistency_selection.png")
 - Whenever there is a change in the plots or in the table, click "update associationSubgraphs" to update the network visualization
 
 ```{r, echo = FALSE}
-embed_png("explore_page.png")
+embed_png("overall.png")
 ```
-
-
-## Reference
-
-Aguado,A. et al. (2020) MorbiNet: multimorbidity networks in adult general population. Analysis of type 2 diabetes mellitus comorbidity. Sci Rep, 10, 2416.
-
-Bastarache,L. et al. (2022) Phenome-Wide Association Studies. JAMA, 327, 75.
-
-Bojko,A. (2009) Informative or misleading? Heatmaps deconstructed. In, Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)., pp. 30–39.
-
-Hassaine,A. et al. (2020) Learning multimorbidity patterns from electronic health records using Non-negative Matrix Factorisation. J Biomed Inform, 112, 103606.
-
-Kuan,V. et al. (2023) Identifying and visualising multimorbidity and comorbidity patterns in patients in the English National Health Service: a population-based study. Lancet Digit Health, 5, e16–e27.
-
-Chong,L.W. et al. (2018) Association of viral hepatitis and bipolar disorder: A nationwide population-based study. J Transl Med, 16.
-
-
-
 
 
