@@ -15,7 +15,7 @@ consistency = function(id){
              justify-content: space-evenly;"
     )),
     column(width=12,
-    box(width=12,title = strong("Select institutions and input p-value",style="font-size: 2.0rem;"),
+    box(width=12,title = strong("Select institutions and input cutoff p-value",style="font-size: 2.0rem;"),
         solidHeader=F,status="warning",
            # wellPanel(style ="margin-top: 10px;background-color: white; border-color: white;",
       fluidRow(
@@ -33,7 +33,7 @@ consistency = function(id){
                   tippy::tippy_this(elementId = "info_ins2",tooltip = "<span style='font-size:20px;'>Y-axis plotted the value of institution 1<span>",placement = "right")
       )
       ),
-      column(3,p(HTML("<b>Input p-value</b>"),span(shiny::icon("info-circle"),id = "info_pvalue"),
+      column(3,p(HTML("<b>Input cutoff p-value</b>"),span(shiny::icon("info-circle"),id = "info_pvalue"),
                   numericInput(ns('pvalue'), NULL,min=0,max=1,value=1),
                   tippy::tippy_this(elementId = "info_pvalue",
                                     tooltip = "<span style='font-size:20px;'>Phenotypes co-occured with selected phenotype and corresponding p-value < input threshold will be colored green<span>",

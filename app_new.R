@@ -15,7 +15,7 @@ starting_code <- "295.10"
 # Used in data table to both select correct row and navigate table to that row
 start_index <- which(phecodes$phecode == starting_code)
 
-ui <- navbarPage(div(strong("Phecode-wide Multi-Institutional Multimorbidity Explorer"),style="font-size: 2.2rem;"),
+ui <- navbarPage(div(strong("Multi-Institutional Multimorbidity Explorer"),style="font-size: 2.2rem;"),
                  #color:#2c3e50
                  tags$style(HTML("
                             .navbar-default {background-color: #fff !important;font-size: 13px;}
@@ -53,7 +53,7 @@ ui <- navbarPage(div(strong("Phecode-wide Multi-Institutional Multimorbidity Exp
 
                  #1st tab content
                  tabPanel(
-                   strong("Select Phenotype"),
+                   strong("Disease Selection"),
                    # select_phe("select_phenotype")
                    fluidRow(
                      column(width=12,div(
@@ -63,12 +63,12 @@ ui <- navbarPage(div(strong("Phecode-wide Multi-Institutional Multimorbidity Exp
                      center;justify-content: space-evenly;")),
 
                      column(width=12,box(width=12,
-                                         title = strong("Select code of interest",style="font-size: 2.0rem;"),
+                                         title = strong("Select phecode of interest",style="font-size: 2.0rem;"),
                                          status="warning",solidHeader = FALSE,
                                          div(
-                                           p("Please click on the rows to select code of interest, click twice to unselect;",
+                                           p("To select a phecode of interest, click on the corresponding row. To deselect a phecode, simply click on the row again.",
                                              style = "text-align: left;font-size: 2.0rem; color:black;"),
-                                           p("You could search the phecode by typing in the 'Search' box;",
+                                           p("If you want to search for a specific phecode or filter for a subset of phecodes to select, you can simply type of your query into the 'Search' box.",
                                              style = "text-align: left;font-size: 2.0rem; color:black;")
                                          ),
                                          hr(),
@@ -80,26 +80,26 @@ ui <- navbarPage(div(strong("Phecode-wide Multi-Institutional Multimorbidity Exp
 
                  #2nd tab content
                  tabPanel(
-                   strong("Compare Multimorbidity Consistency"),
+                   strong("Multimorbidity Consistency Inspection"),
                    consistency("comorbidity_consistency")
                  ),
                  #==================================================================================
 
                  #3rd tab content
                  tabPanel(
-                   strong("Visualize Multimorbidity Network"),
+                   strong("Multimorbidity Network Visualization"),
                    comorbidity_networkPlot("comorbidity_network")
                  ),
                  #==================================================================================
                  #4th tab content
                  tabPanel(
-                   strong("Explore Multimorbidity"),
+                   strong("Reproducible Multimorbidities Exploration"),
                    annotationPlot("comorbidity")
                  ),
                  #==================================================================================
                  #5th tab content
                  tabPanel(
-                   strong("Explore Similarity"),
+                   strong("Multimorbidity Similarities Exploration"),
                    annotationPlot("similarity")
                  )
         #          ,

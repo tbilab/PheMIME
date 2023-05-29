@@ -17,7 +17,7 @@ comorbidity_networkPlot = function(id){
     )),
     column(width=12,
            # wellPanel(style ="margin-top: 10px;background-color: #fff; border-color: white;",
-    box(width=12,title = strong("Select institutions and input p-value",style="font-size: 2.0rem;"),
+    box(width=12,title = strong("Select institutions and input cutoff p-value",style="font-size: 2.0rem;"),
         solidHeader=F,status="warning",
         fluidRow(column(12, div(
           p("Phenotypes co-occured with selected phecode and corresponding p-value < input p-value threshold are colored, and the other non-significant phenotypes are colored grey;",
@@ -32,7 +32,7 @@ comorbidity_networkPlot = function(id){
                      tippy::tippy_this(elementId = "select_ins",
                                        tooltip = "<span style='font-size:20px;'>Comorbidity network is build on comorbidity strength from single institution or combined comorbidity strength from multiple instutions<span>",placement = "right"))),
 
-                   column(4,p(HTML("<b>Input p-value</b>"),span(shiny::icon("info-circle"),id = "info_pvalue_net"),
+                   column(4,p(HTML("<b>Input cutoff p-value</b>"),span(shiny::icon("info-circle"),id = "info_pvalue_net"),
                             numericInput(ns('pvalue'), NULL,min=0,max=1,value=1),
                             tippy::tippy_this(elementId = "info_pvalue_net",
                                               tooltip = "<span style='font-size:20px;'>Phenotypes co-occured with selected phecode and corresponding p-value < input p-value threshold are colored<span>",placement = "right"))),
@@ -90,8 +90,10 @@ comorbidity_networkServer = function(id,code_description,code_id) {
           node_info = tibble(id = unique(c(association_pairs_total$a,association_pairs_total$b))) %>%
             left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
             arrange(group) %>%
-            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE"))
-
+            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE")) %>%
+            mutate(color = factor(color)) %>%
+            arrange(color)
+            
         } else if(input$institution == "ukbb"){
           association_pairs_total = com_sim %>%
             # dplyr::filter(p_val_ukbb <= input$pvalue) %>%
@@ -112,7 +114,9 @@ comorbidity_networkServer = function(id,code_description,code_id) {
           node_info = tibble(id = unique(c(association_pairs_total$a,association_pairs_total$b))) %>%
             left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
             arrange(group) %>%
-            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE"))
+            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE")) %>%
+            mutate(color = factor(color)) %>%
+            arrange(color)
 
         } else if(input$institution == "mgh"){
           association_pairs_total = com_sim %>%
@@ -134,7 +138,9 @@ comorbidity_networkServer = function(id,code_description,code_id) {
           node_info = tibble(id = unique(c(association_pairs_total$a,association_pairs_total$b))) %>%
             left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
             arrange(group) %>%
-            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE"))
+            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE")) %>%
+            mutate(color = factor(color)) %>%
+            arrange(color)
 
         } else if(input$institution == "vandy & mgh"){
           association_pairs_total = com_sim %>%
@@ -156,7 +162,9 @@ comorbidity_networkServer = function(id,code_description,code_id) {
           node_info = tibble(id = unique(c(association_pairs_total$a,association_pairs_total$b))) %>%
             left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
             arrange(group) %>%
-            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE"))
+            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE")) %>%
+            mutate(color = factor(color)) %>%
+            arrange(color)
 
         } else if(input$institution == "vandy & ukbb"){
           association_pairs_total = com_sim %>%
@@ -178,7 +186,9 @@ comorbidity_networkServer = function(id,code_description,code_id) {
           node_info = tibble(id = unique(c(association_pairs_total$a,association_pairs_total$b))) %>%
             left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
             arrange(group) %>%
-            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE"))
+            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE")) %>%
+            mutate(color = factor(color)) %>%
+            arrange(color)
 
         } else if(input$institution == "mgh & ukbb"){
           association_pairs_total = com_sim %>%
@@ -200,7 +210,9 @@ comorbidity_networkServer = function(id,code_description,code_id) {
           node_info = tibble(id = unique(c(association_pairs_total$a,association_pairs_total$b))) %>%
             left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
             arrange(group) %>%
-            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE"))
+            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE")) %>%
+            mutate(color = factor(color)) %>%
+            arrange(color)
 
         } else if(input$institution == "vandy & mgh & ukbb"){
           association_pairs_total = com_sim %>%
@@ -222,7 +234,9 @@ comorbidity_networkServer = function(id,code_description,code_id) {
           node_info = tibble(id = unique(c(association_pairs_total$a,association_pairs_total$b))) %>%
             left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
             arrange(group) %>%
-            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE"))
+            mutate(color = ifelse(id %in% selected_id,color,"#DEDEDE")) %>%
+            mutate(color = factor(color)) %>%
+            arrange(color)
 
         }
 
@@ -234,7 +248,7 @@ comorbidity_networkServer = function(id,code_description,code_id) {
         output$comorbidity_network_plot = r2d3::renderD3({
           withProgress(message = "",
                        value=0,{
-                        incProgress(0.5,detail = "associationubgraph is running")    
+                        incProgress(0.5,detail = "associationsubgraphs are running")    
                          
                          if(code_description() %in% unique(c(selectedData()[["association_pairs"]]$a,selectedData()[["association_pairs"]]$b))){
                           subgraph=visualize_subgraph_structure(
