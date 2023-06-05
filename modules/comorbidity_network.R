@@ -1,6 +1,6 @@
 comorbidity_networkPlot = function(id){
   ns <- NS(id)
-  institution = list("VUMC"="vandy","UKB"="ukbb","MGB"="mgh","Combination of VUMC and MGB"="vandy & mgh",
+  institution = list("","VUMC"="vandy","UKB"="ukbb","MGB"="mgh","Combination of VUMC and MGB"="vandy & mgh",
                      "Combination of VUMC and UKB"="vandy & ukbb","Combination of MGB and UKB"="mgh & ukbb",
                      "Combination of VUMC, MGB and UKB"="vandy & mgh & ukbb")
 
@@ -20,24 +20,27 @@ comorbidity_networkPlot = function(id){
     box(width=12,title = strong("Select institutions and input cutoff p-value",style="font-size: 2.0rem;"),
         solidHeader=F,status="warning",
         fluidRow(column(12, div(
-          p("Phenotypes co-occured with selected phecode and corresponding p-value < input p-value threshold are colored, and the other non-significant phenotypes are colored grey;",
+          p("To visualize the associationsubgraphs, select an institution and input cutoff p-value, then click 'Visualize associationsubgraphs'",
             style = "text-align: left;font-size: 2.0rem; color:black;")),
           div(
-            p("Please click 'update associationsubgraphs' to visualize the network when a different institution is selected, or a different p-value threshold is input.",
+            p("If you want to update the associationsubgraphs, you can simply re-select the institution and re-input cutoff p-value, then click 'Visualize associationsubgraphs'",
+              style = "text-align: left;font-size: 2.0rem; color:black;")),
+          div(
+            p("Network nodes are annotated into two groups, with the phecodes co-occurred with selected phecode and corresponding p-value < cutoff p-value color-filled based on disease categories and the other phecodes color-filled in grey.",
               style = "text-align: left;font-size: 2.0rem; color:black;")),
           hr()),
 
                   column(4,p(HTML("<b>Select institution</b>"),span(shiny::icon("info-circle"),id = "select_ins"),
-                             selectInput(ns('institution'), NULL, choices=institution),
+                             selectInput(ns('institution'), NULL, choices=institution,selected = ""),
                      tippy::tippy_this(elementId = "select_ins",
                                        tooltip = "<span style='font-size:20px;'>Comorbidity network is build on comorbidity strength from single institution or combined comorbidity strength from multiple instutions<span>",placement = "right"))),
 
                    column(4,p(HTML("<b>Input cutoff p-value</b>"),span(shiny::icon("info-circle"),id = "info_pvalue_net"),
-                            numericInput(ns('pvalue'), NULL,min=0,max=1,value=1),
+                            numericInput(ns('pvalue'), NULL,min=0,max=1,value=NULL),
                             tippy::tippy_this(elementId = "info_pvalue_net",
                                               tooltip = "<span style='font-size:20px;'>Phenotypes co-occured with selected phecode and corresponding p-value < input p-value threshold are colored<span>",placement = "right"))),
 
-                  column(4,actionButton(ns("update_network"), "Update Associationsubgraphs"))
+                  column(4,actionButton(ns("update_network"), "Visualize associationsubgraphs"))
     ))),
     column(width=12,
            box(width=12,align="center",solidHeader=F,status="warning",
@@ -268,7 +271,7 @@ comorbidity_networkServer = function(id,code_description,code_id) {
                          }
                          # incProgress(0.3, detail = "Nearly done")
                          # Sys.sleep(5)
-                         incProgress(0.4, detail = "Nearly done, subgraphs will show in 10 seconds!")
+                         incProgress(0.4, detail = "Nearly done, associationsubgraphs will show in 10 seconds!")
                          Sys.sleep(5)
                        })
           subgraph

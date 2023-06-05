@@ -20,7 +20,7 @@ annotationPlot <- function(id) {
                   column(12,div(p("Click a point to annotate it. Drag region to highlight multiple points. Double click to remove annotation.",style = "font-size: 2.0rem;color: black;"))),
                   column(2,div(p("Hovered over:",style = "font-size:2.0rem;color: black;"))),
                   column(6,span(textOutput(ns("plot_hoverinfo")),style = "font-size:2.0rem;color: black;")),
-                  column(4,actionButton(ns("dump_annotations"), "Remove all annotations")),
+                  column(4,actionButton(ns("dump_annotations"), "Reset")),
                   column(12,div(style = "height:30px"))))),
       ##three tabs
       column(12,tabBox(width=12,
@@ -143,7 +143,7 @@ annotationPlot <- function(id) {
 
                  box(width=12,title=strong("Associationsubgraph: annotated points are colored"),solidHeader = F,status="warning",
                      column(12,fluidRow(
-                       column(12,div(actionButton(ns("update_subgraph_mgh_ukbb"), "Update associationsubgraphs"),
+                       column(12,div(actionButton(ns("update_subgraph_mgh_ukbb"), "Visualize associationsubgraphs"),
                                      style="float:right")),
                        column(12,div(style = "height:30px")),
                        column(12,uiOutput(ns("spinner3")))))
@@ -214,17 +214,17 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       #specify the institution
       #======================================================
       #===============================================
-      ##watch for subnetwork button click
+      ##watch for associationsubgraphs button click
       #===============================================
       observeEvent(input$update_subgraph_vandy_mgh,{
       
         output$plot3_vandy_mgh <- r2d3::renderD3({
           withProgress(message = "",
                        value=0,{
-          incProgress(0.5,detail = "associationubgraph is running")               
+          incProgress(0.5,detail = "associationubgraphs are running")               
           subgraph = comorbidity_subnetwork(com_sim,isolate(annotated_points()),
                                  paste0(glue("{(type_label)}_vandy_mgh")),code_description)
-          incProgress(0.4, detail = "Nearly done, subgraphs will show in 10 seconds!")
+          incProgress(0.4, detail = "Nearly done, associationsubgraphs will show in 10 seconds!")
           Sys.sleep(5)
           })
           subgraph
@@ -238,12 +238,12 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
 
       observeEvent(input$update_subgraph_vandy_ukbb,{
         output$plot3_vandy_ukbb <- r2d3::renderD3({
-          withProgress(message = "associationubgraph is running",
+          withProgress(message = "",
                        value=0,{
-                         incProgress(0.5,detail = "associationubgraph is running")                
+                         incProgress(0.5,detail = "associationubgraphs are running")                
                          subgraph = comorbidity_subnetwork(com_sim,isolate(annotated_points()),
                                                            paste0(glue("{(type_label)}_vandy_ukbb")),code_description)
-                         incProgress(0.4, detail = "Nearly done, subgraphs will show in 10 seconds!")
+                         incProgress(0.4, detail = "Nearly done, associationsubgraphs will show in 10 seconds!")
                          Sys.sleep(5)
                        })
           subgraph
@@ -257,12 +257,12 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
 
       observeEvent(input$update_subgraph_mgh_ukbb,{
         output$plot3_mgh_ukbb <- r2d3::renderD3({
-          withProgress(message = "associationubgraph is running",
+          withProgress(message = "",
                        value=0,{
-                         incProgress(0.5,detail = "associationubgraph is running")                
+                         incProgress(0.5,detail = "associationubgraphs are running")                
                          subgraph = comorbidity_subnetwork(com_sim,isolate(annotated_points()),
                                                            paste0(glue("{(type_label)}_mgh_ukbb")),code_description)
-                         incProgress(0.4, detail = "Nearly done, subgraphs will show in 10 seconds!")
+                         incProgress(0.4, detail = "Nearly done, associationsubgraphs will show in 10 seconds!")
                          Sys.sleep(5)
                        })
           subgraph
@@ -322,19 +322,207 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       #   # make sure to select the rows again
       #   # DT::selectRows(proxy, c(0,seq_along(2:nrow(table_data_new))))
       #   })
+      
+      #===============================================
+      ##table output of selected phecodes
+      #===============================================
+      code_data_vandy_mgh = reactive({code_data() %>% drop_na(z_vandy_mgh) %>% arrange(desc(z_vandy_mgh))})
+      
+      selected_rows1 <- reactive({
+        if(length(annotated_points()>1)){
+          ifelse(seq_len(nrow(code_data_vandy_mgh())) %in% which(code_data_vandy_mgh()$phecode %in% annotated_points()),
+                 seq_len(nrow(code_data_vandy_mgh())),0)
+        } else{
+          seq_len(0)
+        }
+      })
+      
+      table_data1 = reactive({
+        if(length(annotated_points()>1)){
+        code_data_vandy_mgh()[c(which(selected_rows1()!=0),which(selected_rows1()==0)),] %>%
+            dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
+                          glue("{(type_label)}_mgh"),
+                          glue("{(type_label)}_ukbb")) %>%
+            mutate(across(4:6, round, 3))
+        } else{
+            code_data_vandy_mgh()%>%
+            dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
+                          glue("{(type_label)}_mgh"),
+                          glue("{(type_label)}_ukbb")) %>%
+            mutate(across(4:6, round, 3))
+          }
+      })
+      
+      selected_rows_order1 = reactive({
+        if(length(annotated_points()>1)){
+          c(seq_len(sum(selected_rows1()!=0)),rep(0,length(selected_rows1())-sum(selected_rows1()!=0)))
+        } else{
+          seq_len(0)
+        }
+      })
+      
+      output$selected_codes_table1 = DT::renderDataTable(
+        
+        # if(length(values1$options$order) != 0 && ((values1$options$order[[1]][[1]] == 1) | (values1$options$order[[1]][[1]] == 2)) ){
+        #   values1$options$order = list()
+        # }
+        
+        table_data1() %>%
+          datatable(
+            options = list(scrollY = 600,
+                           scroller = TRUE,
+                           dom = 'ft',
+                           # order = list(list(3, 'asc')),
+                           pageLength = nrow(.)),
+            selection = list(mode='multiple',selected = selected_rows_order1()))
+      )
+      # proxy = dataTableProxy('selected_codes_table1')
+      # observeEvent(input$update_plot_vandy_mgh,{
+      #   replaceData(proxy, formattable(table_data1(),
+      #                                  options = list(iDisplayLength = 100),
+      #                                  selection = list(mode='multiple',selected = selected_rows1())), resetPaging = FALSE)
+      # })
+      # values1 <- reactiveValues(
+      #   options = list(
+      #     # sDom  = '<"top">rt<"bottom">ip',
+      #                  stateSave = TRUE,
+      #                  # scrollY = 700,
+      #                  # scroller = TRUE,
+      #                  iDisplayLength = 100,
+      #                  # dom = 'ft',
+      #                  order = list())
+      # )
+      # observeEvent(input$selected_codes_table1_state$order, {
+      #   values1$options$order <- input$selected_codes_table1_state$order
+      # })
+      
+      ## download selected rows
+      output$downloadtable1 <- downloadHandler(
+        filename = function() {
+          paste0("selected_phecodes_table",Sys.time(),".csv")
+        },
+        content = function(file) {
+          write.table(table_data1()[input$selected_codes_table1_rows_selected,], file, row.names = FALSE)
+        }
+      )
+      
+      #vandy vs ukbb
+      code_data_vandy_ukbb = reactive({code_data() %>% drop_na(z_vandy_ukbb) %>% arrange(desc(z_vandy_ukbb))})
+      selected_rows2 <- reactive({
+        if(length(annotated_points()>1)){
+          ifelse(seq_len(nrow(code_data_vandy_ukbb())) %in% which(code_data_vandy_ukbb()$phecode %in% annotated_points()),
+                 seq_len(nrow(code_data_vandy_ukbb())),0)
+        } else{
+          seq_len(0)
+        }
+      })
+      
+      table_data2 = reactive({
+        if(length(annotated_points()>1)){
+          code_data_vandy_ukbb()[c(which(selected_rows2()!=0),which(selected_rows2()==0)),] %>%
+            dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
+                          glue("{(type_label)}_mgh"),
+                          glue("{(type_label)}_ukbb")) %>%
+            mutate(across(4:6, round, 3))
+        } else{
+          code_data_vandy_ukbb()%>%
+            dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
+                          glue("{(type_label)}_mgh"),
+                          glue("{(type_label)}_ukbb")) %>%
+            mutate(across(4:6, round, 3))
+        }
+      })
+      
+      selected_rows_order2 = reactive({
+        if(length(annotated_points()>1)){
+          c(seq_len(sum(selected_rows2()!=0)),rep(0,length(selected_rows2())-sum(selected_rows2()!=0)))
+        } else{
+          seq_len(0)
+        }
+      })
+      
+      output$selected_codes_table2 <- renderDataTable({
+        
+        table_data2() %>%
+          datatable(
+            options = list(scrollY = 600,
+                           scroller = TRUE,
+                           dom = 'ft',
+                           # order = list(list(3, 'asc')),
+                           pageLength = nrow(.)),
+            selection = list(mode='multiple',selected = selected_rows_order2()))
+      })
+      
+      ## download selected rows
+      output$downloadtable2 <- downloadHandler(
+        filename = function() {
+          paste0("selected_phecodes_table",Sys.time(),".csv")
+        },
+        content = function(file) {
+          write.table(table_data2()[input$selected_codes_table2_rows_selected,], file, row.names = FALSE)
+        }
+      )
+      
+      ## mgh vs ukbb
+      code_data_mgh_ukbb = reactive({code_data() %>% drop_na(z_mgh_ukbb) %>% arrange(desc(z_mgh_ukbb))})
+      selected_rows3 <- reactive({
+        if(length(annotated_points()>1)){
+          ifelse(seq_len(nrow(code_data_mgh_ukbb())) %in% which(code_data_mgh_ukbb()$phecode %in% annotated_points()),
+                 seq_len(nrow(code_data_mgh_ukbb())),0)
+        } else{
+          seq_len(0)
+        }
+      })
+      
+      table_data3 = reactive({
+        if(length(annotated_points()>1)){
+          code_data_mgh_ukbb()[c(which(selected_rows3()!=0),which(selected_rows3()==0)),] %>%
+            dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
+                          glue("{(type_label)}_mgh"),
+                          glue("{(type_label)}_ukbb")) %>%
+            mutate(across(4:6, round, 3))
+        } else{
+          code_data_mgh_ukbb()%>%
+            dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
+                          glue("{(type_label)}_mgh"),
+                          glue("{(type_label)}_ukbb")) %>%
+            mutate(across(4:6, round, 3))
+        }
+      })
+      
+      selected_rows_order3 = reactive({
+        if(length(annotated_points()>1)){
+          c(seq_len(sum(selected_rows3()!=0)),rep(0,length(selected_rows3())-sum(selected_rows3()!=0)))
+        } else{
+          seq_len(0)
+        }
+      })
+      
+      output$selected_codes_table3 <- renderDataTable({
+        table_data3() %>%
+          datatable(
+            options = list(scrollY = 600,
+                           scroller = TRUE,
+                           dom = 'ft',
+                           # order = list(list(3, 'asc')),
+                           pageLength = nrow(.)),
+            selection = list(mode='multiple',selected = selected_rows_order3()))
+      })
+      
+      ## download selected rows
+      output$downloadtable3 <- downloadHandler(
+        filename = function() {
+          paste0("selected_phecodes_table",Sys.time(),".csv")
+        },
+        content = function(file) {
+          write.table(table_data3()[input$selected_codes_table3_rows_selected,], file, row.names = FALSE)
+        }
+      )
 
       #===============================================
       ##manhattan plot
       #===============================================
       #vandy & mgh
-      code_data_vandy_mgh = reactive({code_data() %>% drop_na(z_vandy_mgh) %>% arrange(desc(z_vandy_mgh))})
-      table_data1 = reactive({
-        code_data_vandy_mgh() %>%
-          dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
-                        glue("{(type_label)}_mgh"),
-                        glue("{(type_label)}_ukbb")) %>%
-          mutate(across(4:6, round, 3))
-      })
       output$plot1_vandy_mgh <- renderPlot({
 
         if(nrow(code_data_vandy_mgh())!=0){
@@ -386,13 +574,6 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
         s_plot()
       })
 
-      code_data_vandy_ukbb = reactive({code_data() %>% drop_na(z_vandy_ukbb) %>% arrange(desc(z_vandy_ukbb))})
-      table_data2 = reactive({code_data_vandy_ukbb() %>%
-          dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
-                        glue("{(type_label)}_mgh"),
-                        glue("{(type_label)}_ukbb")) %>%
-          mutate(across(4:6, round, 3))})
-
       output$plot1_vandy_ukbb <- renderPlot({
 
         if(nrow(code_data_vandy_ukbb())!=0){
@@ -443,13 +624,6 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
         s_plot()
       })
 
-      code_data_mgh_ukbb = reactive({code_data() %>% drop_na(z_mgh_ukbb) %>% arrange(desc(z_mgh_ukbb))})
-      table_data3 = reactive({code_data_mgh_ukbb() %>%
-          dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
-                        glue("{(type_label)}_mgh"),
-                        glue("{(type_label)}_ukbb")) %>%
-          mutate(across(4:6, round, 3))})
-
       output$plot1_mgh_ukbb <- renderPlot({
 
         if(nrow(code_data_mgh_ukbb())!=0){
@@ -499,128 +673,6 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
         ggsave("scatter3.png",s_plot())
         s_plot()
       })
-
-      #===============================================
-      ##table output of selected phecodes
-      #===============================================
-
-      selected_rows1 <- reactive({
-        if(length(annotated_points()>1)){
-          ifelse(seq_len(nrow(code_data_vandy_mgh())) %in% which(code_data_vandy_mgh()$phecode %in% annotated_points()),
-                 seq_len(nrow(code_data_vandy_mgh())),0)
-        } else{
-          seq_len(0)
-        }
-      })
-
-      output$selected_codes_table1 = DT::renderDataTable(
-
-        # if(length(values1$options$order) != 0 && ((values1$options$order[[1]][[1]] == 1) | (values1$options$order[[1]][[1]] == 2)) ){
-        #   values1$options$order = list()
-        # }
-
-        table_data1() %>%
-        datatable(
-        options = list(scrollY = 600,
-                       scroller = TRUE,
-                       dom = 'ft',
-                       # order = list(list(3, 'asc')),
-                       pageLength = nrow(.)),
-        selection = list(mode='multiple',selected = selected_rows1()))
-
-      )
-      # proxy = dataTableProxy('selected_codes_table1')
-      # observeEvent(input$update_plot_vandy_mgh,{
-      #   replaceData(proxy, formattable(table_data1(),
-      #                                  options = list(iDisplayLength = 100),
-      #                                  selection = list(mode='multiple',selected = selected_rows1())), resetPaging = FALSE)
-      # })
-      # values1 <- reactiveValues(
-      #   options = list(
-      #     # sDom  = '<"top">rt<"bottom">ip',
-      #                  stateSave = TRUE,
-      #                  # scrollY = 700,
-      #                  # scroller = TRUE,
-      #                  iDisplayLength = 100,
-      #                  # dom = 'ft',
-      #                  order = list())
-      # )
-      # observeEvent(input$selected_codes_table1_state$order, {
-      #   values1$options$order <- input$selected_codes_table1_state$order
-      # })
-
-      ## download selected rows
-      output$downloadtable1 <- downloadHandler(
-        filename = function() {
-          paste0("selected_phecodes_table",Sys.time(),".csv")
-        },
-        content = function(file) {
-          write.table(table_data1()[input$selected_codes_table1_rows_selected,], file, row.names = FALSE)
-        }
-      )
-
-      #vandy vs ukbb
-      selected_rows2 <- reactive({
-        if(length(annotated_points()>1)){
-          ifelse(seq_len(nrow(code_data_vandy_ukbb())) %in% which(code_data_vandy_ukbb()$phecode %in% annotated_points()),
-                 seq_len(nrow(code_data_vandy_ukbb())),0)
-        } else{
-          seq_len(0)
-        }
-      })
-
-      output$selected_codes_table2 <- renderDataTable({
-
-        table_data2() %>%
-          datatable(
-            options = list(scrollY = 600,
-                           scroller = TRUE,
-                           dom = 'ft',
-                           # order = list(list(3, 'asc')),
-                           pageLength = nrow(.)),
-            selection = list(mode='multiple',selected = selected_rows2()))
-      })
-
-      ## download selected rows
-      output$downloadtable2 <- downloadHandler(
-        filename = function() {
-          paste0("selected_phecodes_table",Sys.time(),".csv")
-        },
-        content = function(file) {
-          write.table(table_data2()[input$selected_codes_table2_rows_selected,], file, row.names = FALSE)
-        }
-      )
-
-      ## mgh vs ukbb
-      selected_rows3 <- reactive({
-        if(length(annotated_points()>1)){
-          ifelse(seq_len(nrow(code_data_mgh_ukbb())) %in% which(code_data_mgh_ukbb()$phecode %in% annotated_points()),
-                 seq_len(nrow(code_data_mgh_ukbb())),0)
-        } else{
-          seq_len(0)
-        }
-      })
-
-      output$selected_codes_table3 <- renderDataTable({
-        table_data3() %>%
-          datatable(
-            options = list(scrollY = 600,
-                           scroller = TRUE,
-                           dom = 'ft',
-                           # order = list(list(3, 'asc')),
-                           pageLength = nrow(.)),
-            selection = list(mode='multiple',selected = selected_rows3()))
-      })
-
-      ## download selected rows
-      output$downloadtable3 <- downloadHandler(
-        filename = function() {
-          paste0("selected_phecodes_table",Sys.time(),".csv")
-        },
-        content = function(file) {
-          write.table(table_data3()[input$selected_codes_table3_rows_selected,], file, row.names = FALSE)
-        }
-      )
 
       output$current_code_label <- renderText(glue("Current selection: {code_id()}"))
       ##output of hover points information
