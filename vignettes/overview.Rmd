@@ -1,5 +1,5 @@
 ---
-title: "Phecode-wide Multi-Institutional Multimorbidity Explorer Detailed Overview"
+title: "Multi-Institutional Multimorbidity Explorer Detailed Overview"
 author: Siwei Zhang
 date: "`r Sys.Date()`"
 output:
@@ -58,23 +58,25 @@ There lacks a common visualization tool to help conduct statistical analysis and
 
 ### User input and selection
 
-- You could select EHR system to compare the consistency in the below "Institutions". You could also use multimorbidity strength from single institution or combined multimorbidity strength from multiple institutions by selecting which EHR system to use. 
+- You could select the interested Phecode from the Phecode table in the "Disease Selection" page. PheMIME allows users to explore one Phecode at a time.
 
-- You could input statistical significance level in the below box such as "Input p-value"
+- You could select EHR system to compare the multimorbidity consistency in the box of "Institutions". You could also use multimorbidity strength from single institution or combined multimorbidity strength from multiple institutions by selecting which EHR system to use. 
 
-- Whenever you select a new institution, or you input another significance level, you need click "Update" button in each page. It is a two-step analysis that will avoid transient changes when changing the input values.
+- You could input statistical significance level in the box such as "Input cutoff p-value"
 
-```{r, echo = FALSE}
-embed_png("consistency_selection.png")
-```
+- Whenever you select a new institution, or you input another significance level, you need click "Compare in the scatter plot" or "Visualize associationSubgraphs" button in each page. It is a two-step analysis that will avoid transient changes when changing the input values.
+
+<!-- # ```{r, echo = FALSE} -->
+<!-- # embed_png("consistency_selection.png") -->
+<!-- # ``` -->
   
-**Explore Multimorbidity**
+### Explore Multimorbidity
 
 - You could hover, click, double-click or brush the points in the plots. When you hover the point, the information of the points will be shown. Brushing a region to include the points you want to select and you can add new points by clicking the point or remove the points by double-click the point.
 
 - Table is interactive with the plots. You can check a phenotype's consistency across different systems or multimorbidity strength by clicking the row corresponding to this phenotype in the table and then clicking "Update" button to update the plots. 
 
-- Whenever there is a change in the plots or in the table, click "update associationSubgraphs" to update the network visualization
+- Whenever there is a change in the plots or in the table, click "Visualize associationSubgraphs" to update the network visualization
 
 ```{r, echo = FALSE}
 embed_png("overall.png")

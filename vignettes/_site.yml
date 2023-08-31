@@ -1,6 +1,6 @@
-name: "Phecode-wide Multi-Institutional Multimorbidity Explorer"
+name: "Multi-Institutional Multimorbidity Explorer"
 navbar:
-  title: "Phecode-wide Multi-Institutional Multimorbidity Explorer"
+  title: "Multi-Institutional Multimorbidity Explorer"
   type: inverse
   left:
     - text: "Appendix: Detailed Overview"

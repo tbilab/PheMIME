@@ -251,7 +251,7 @@ comorbidity_networkServer = function(id,code_description,code_id) {
         output$comorbidity_network_plot = r2d3::renderD3({
           withProgress(message = "",
                        value=0,{
-                        incProgress(0.5,detail = "associationsubgraphs are running")    
+                        incProgress(0.5,detail = "associationSubgraphs are running")    
                          
                          if(code_description() %in% unique(c(selectedData()[["association_pairs"]]$a,selectedData()[["association_pairs"]]$b))){
                           subgraph=visualize_subgraph_structure(
@@ -271,7 +271,7 @@ comorbidity_networkServer = function(id,code_description,code_id) {
                          }
                          # incProgress(0.3, detail = "Nearly done")
                          # Sys.sleep(5)
-                         incProgress(0.4, detail = "Nearly done, associationsubgraphs will show in 10 seconds!")
+                         incProgress(0.4, detail = "Nearly done, associationSubgraphs will show in 10 seconds!")
                          Sys.sleep(5)
                        })
           subgraph
