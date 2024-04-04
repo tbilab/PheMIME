@@ -6,8 +6,8 @@ library(furrr)
 plan(multiprocess, workers = 10)
 
 #comorbidity strength of vandy, mgh and ukbb
-combined_associations <- read_rds("/home/siwei/cross_institutions_multimorbidity/intermediate_data/combined_associations.rds")
-load("~/cseToolkit/R/combined_vandy250K_mgh250K_ukbb.rda")
+combined_associations <- read_rds("/home/siwei/paper_draft_prepare/Interoperability_MS/cross_institutions_multimorbidity_orignick/intermediate_data/combined_associations.rds")
+load("/home/siwei/paper_draft_prepare/PheMIME/data/combined_vandy250K_mgh250K_ukbb.rda")
 load("~/cseToolkit/R/phecode_def.rda")
 
 all_dat = all_dat %>% dplyr::select(z_avg_ukbb,overlap_ukbb,a,b) %>%

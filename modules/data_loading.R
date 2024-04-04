@@ -1,9 +1,10 @@
 source("modules/load_libraries.R")
-load("data/combined_vandy250K_mgh250K_ukbb.rda")
+# load("data/combined_vandy250K_mgh250K_ukbb.rda")
 load("data/phecode_def.rda")
 load("data/phecode_descriptions.rda")
 # load("subgraphs.rda")
 # load("node_info.rda")
+com_sim = readRDS("data/combined_vandy250K_mgh250K_ukbb.rds")
 
 join_phecode_info = function (data_w_phecode, phecode_column = phecode, cols_to_join = c("description",
                                                                                          "category", "category_number", "phecode_index"))

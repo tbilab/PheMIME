@@ -3,16 +3,20 @@ annotationPlot <- function(id) {
   tagList(
     # tags$head(tags$script(src="my.js")),
     fluidRow(
-      column(width=12,div(
-        span(textOutput(ns("current_code_label"),inline = TRUE),style = "font-size:2.5rem;color: black;center;center;"),
-        style =
-          "padding-top: 10px;
-             padding-bottom: 5px;
-             margin-top: 3px;
-             display: flex;
-             align-items: center;
-             justify-content: space-evenly;"
-      )),
+      # load required Java Script
+      useShinyjs(),
+      
+      # column(width=12,
+      #        div(
+      #   span(withSpinner(textOutput(ns("current_code_label"),inline = F),size=0.01),style = "font-size:2.5rem;color: black;center;center;"),
+      #   style =
+      #     "padding-top: 10px;
+      #        padding-bottom: 5px;
+      #        margin-top: 3px;
+      #        display: flex;
+      #        align-items: center;
+      #        justify-content: space-evenly;"
+      # )),
 
       column(12,
              box(width=12,title=strong("Interactive Manhattan/Scatter Plot and Network",style="font-size: 2.0rem;"),solidHeader = F,status="warning",
@@ -162,7 +166,15 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
   moduleServer(
     id,
     function(input, output, session) {
-
+      
+      #===============================================
+      # Update selected code
+      #===============================================
+      observeEvent(code_id(),{
+        output$current_code_label <- renderText({
+          glue("Current selection: {code_id()}")
+        })
+      })
 
       #===============================================
       # Watch for manhattan plot code selection
@@ -382,12 +394,11 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       ## download selected rows
       output$downloadtable1 <- downloadHandler(
         filename = function() {
-          paste0("selected_phecodes_table",Sys.time(),".csv")
+          paste0("selected_phecodes_table",Sys.time(),".xlsx")
         },
         content = function(file) {
-          write.csv(table_data1()[input$selected_codes_table1_rows_selected,] %>% 
-                      mutate(description = str_replace_all(description,",","_")), file, row.names = FALSE,
-                      col.names = T,quote = F)
+          openxlsx::write.xlsx(table_data1()[input$selected_codes_table1_rows_selected,] %>% 
+                                 mutate(description = str_replace_all(description,",","_")), file)
         }
       )
       
@@ -442,12 +453,11 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       ## download selected rows
       output$downloadtable2 <- downloadHandler(
         filename = function() {
-          paste0("selected_phecodes_table",Sys.time(),".csv")
+          paste0("selected_phecodes_table",Sys.time(),".xlsx")
         },
         content = function(file) {
-          write.csv(table_data2()[input$selected_codes_table2_rows_selected,] %>% 
-                      mutate(description = str_replace_all(description,",","_")), file, row.names = FALSE,
-                      col.names = T,quote = F)
+          openxlsx::write.xlsx(table_data2()[input$selected_codes_table2_rows_selected,] %>% 
+                                 mutate(description = str_replace_all(description,",","_")), file)
         }
       )
       
@@ -500,13 +510,13 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       ## download selected rows
       output$downloadtable3 <- downloadHandler(
         filename = function() {
-          paste0("selected_phecodes_table",Sys.time(),".csv")
+          paste0("selected_phecodes_table",Sys.time(),".xlsx")
         },
         content = function(file) {
           
-          write.csv(table_data3()[input$selected_codes_table3_rows_selected,] %>% 
-                      mutate(description = str_replace_all(description,",","_")), file, row.names = FALSE,
-                      col.names = T,quote = F)
+          write.xlsx(table_data3()[input$selected_codes_table3_rows_selected,] %>% 
+                       mutate(description = str_replace_all(description,",","_")), file, 
+                     col.names = TRUE, row.names = F, append = FALSE)
         }
       )
 
@@ -664,8 +674,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
         ggsave("scatter3.png",s_plot())
         s_plot()
       })
-
-      output$current_code_label <- renderText(glue("Current selection: {code_id()}"))
+      
       ##output of hover points information
       output$plot_hoverinfo <- renderText({
         hover_phecode = nearPoints(code_data(), input$point_hover)$phecode[1]

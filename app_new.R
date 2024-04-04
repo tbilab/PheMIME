@@ -1,5 +1,5 @@
 library(here)
-setwd(here())
+# setwd(here())
 source("modules/load_libraries.R")
 source("modules/data_loading.R")
 source("modules/data_table.R")
@@ -56,11 +56,11 @@ ui <- navbarPage(div(strong("Multi-Institutional Multimorbidity Explorer"),style
                    strong("Disease Selection"),
                    # select_phe("select_phenotype")
                    fluidRow(
-                     column(width=12,div(
-                       span(textOutput("current_code_label",inline = TRUE),style = "font-size:2.5rem;color: black;center;center;"),
-                       style = "padding-top: 10px;padding-bottom: 5px;
-                     margin-top: 3px;display: flex;align-items:
-                     center;justify-content: space-evenly;")),
+                     # column(width=12,div(
+                     #   span(textOutput("current_code_label",inline = TRUE),style = "font-size:2.5rem;color: black;center;center;"),
+                     #   style = "padding-top: 10px;padding-bottom: 5px;
+                     # margin-top: 3px;display: flex;align-items:
+                     # center;justify-content: space-evenly;")),
 
                      column(width=12,box(width=12,
                                          title = strong("Select phecode of interest",style="font-size: 2.0rem;"),
@@ -101,10 +101,21 @@ ui <- navbarPage(div(strong("Multi-Institutional Multimorbidity Explorer"),style
                  tabPanel(
                    strong("Multimorbidity Similarities Exploration"),
                    annotationPlot("similarity")
+                 ),
+                 header = div(
+                   span(
+                     textOutput("current_code_label", inline = F), 
+                     style = "font-size:2.5rem;color: black;center;center;"
+                   ),
+                   style = "
+             padding-top: 5px;
+             padding-bottom: 5px;
+             margin-top: 0px;
+             margin-bottom:5px;
+             display: flex;
+             align-items: center;
+             justify-content: space-evenly;" 
                  )
-        #          ,
-        #          tags$head(tags$style(HTML('
-        # ')))
 )
 
 

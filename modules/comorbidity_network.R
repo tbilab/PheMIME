@@ -5,16 +5,16 @@ comorbidity_networkPlot = function(id){
                      "Combination of VUMC, MGB and UKB"="vandy & mgh & ukbb")
 
   fluidRow(
-    column(width=12,div(
-      span(textOutput(ns("current_code_label"),inline = TRUE),style = "font-size:2.5rem;color: black;center;center;"),
-      style =
-        "padding-top: 10px;
-             padding-bottom: 5px;
-             margin-top: 3px;
-             display: flex;
-             align-items: center;
-             justify-content: space-evenly;"
-    )),
+    # column(width=12,div(
+    #   span(withSpinner(textOutput(ns("current_code_label"),inline = TRUE)),style = "font-size:2.5rem;color: black;center;center;"),
+    #   style =
+    #     "padding-top: 10px;
+    #          padding-bottom: 5px;
+    #          margin-top: 3px;
+    #          display: flex;
+    #          align-items: center;
+    #          justify-content: space-evenly;"
+    # )),
     column(width=12,
            # wellPanel(style ="margin-top: 10px;background-color: #fff; border-color: white;",
     box(width=12,title = strong("Select institutions and input cutoff p-value",style="font-size: 2.0rem;"),

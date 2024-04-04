@@ -5,10 +5,8 @@ account: siwei
 server: prod.tbilab.org
 hostUrl: https://prod.tbilab.org/__api__
 appId: 495
-bundleId: 2371
+bundleId: 2715
 url: https://prod.tbilab.org/PheMIME/
-when: 1693450158.84177
-lastSyncTime: 1693450158.84179
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: manhattan1.png|manhattan2.png|README.html|README.md|scatter1.png|helpers|vignettes
+ignoredFiles: manhattan1.png|manhattan2.png|README.html|README.md|scatter1.png|scatter2.png|helpers|vignettes

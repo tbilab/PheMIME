@@ -24,12 +24,13 @@ library(doParallel)
 
 #prepare the nested_phecodes data
 # nested_phecodes <- aws.s3::s3readRDS(bucket="ukb.tbilab",object = "phenome/UKBB_phecode_nested.rds")
-nested_phecodes <- aws.s3::s3readRDS(bucket="tbilab",object = "bv221/ruderfer_collaboration/nested_phecodes_updated.rds")
+nested_phecodes <- aws.s3::s3readRDS(bucket="tbilab",object = "bv221/ruderfer_collaboration/nested_phecodes_floor.rds")
 num_phecodes <- nrow(nested_phecodes)
 
 #prepare the id_to_demographics data
 # id_to_demographics = aws.s3::s3readRDS(bucket="ukb.tbilab",object = "phenome/UKBB_id_to_demographics.rds")
-id_to_demographics = aws.s3::s3readRDS(bucket="tbilab",object = "bv221/ruderfer_collaboration/grid_metadata.rds")
+id_to_demographics = aws.s3::s3readRDS(bucket="tbilab",object = "bv221/ruderfer_collaboration/demographics_int_id_floor.rds")
+id_to_demographics = readRDS("/proj/TBILAB/Projects/Bridge/ANALYST_nick/R/floored_regressions/sampled_demographics.rds")
 
 options(future.globals.maxSize = 4000 * 1024 ^ 2)
 
@@ -59,7 +60,7 @@ phecode_combos <- expand_combinations(num_phecodes) %>%
 
 start = Sys.time()
 message("collecting nodes")
-plan(multisession,workers = 30)
+plan(multisession,workers = 10)
 # myCluster <- makeCluster(50, # number of cores to use
 #                          type = "PSOCK")
 # registerDoParallel(myCluster)
@@ -72,10 +73,10 @@ results <- furrr::future_pmap(
                    purrr::safely(function(phecode_a_ids, phecode_b_ids,phecode_a,phecode_b) {
 
                     id_to_demographics$phecode_a <- 0L
-                    id_to_demographics$phecode_a[phecode_a_ids$int_id] <- 1L
+                    id_to_demographics$phecode_a[phecode_a_ids] <- 1L
                      
                     id_to_demographics$phecode_b <- 0L
-                    id_to_demographics$phecode_b[phecode_b_ids$int_id] <- 1L
+                    id_to_demographics$phecode_b[phecode_b_ids] <- 1L
 
                      
                         a_to_b <-
@@ -123,6 +124,7 @@ aws.s3::s3saveRDS(x=results,bucket="tbilab",
 object = "bv221/ruderfer_collaboration/Vandy_regression_results_total.rds",multipart = TRUE)
 end = Sys.time()
 end-start
+
 
 
 

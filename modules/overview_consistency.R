@@ -4,16 +4,17 @@ consistency = function(id){
   vars = list("","VUMC"="z_vandy","MGB"="z_mgh","UKB"="z_ukbb")
   labels = c("VUMC","MGB","UKB")
   fluidRow(
-    column(width=12,div(
-      span(textOutput(ns("current_code_label"),inline = TRUE),style = "font-size:2.5rem;color: black;center;center;"),
-      style =
-             "padding-top: 10px;
-             padding-bottom: 5px;
-             margin-top: 3px;
-             display: flex;
-             align-items: center;
-             justify-content: space-evenly;"
-    )),
+    # column(width=12,
+    #        div(
+    #   span(withSpinner(textOutput(ns("current_code_label"),inline = TRUE)),style = "font-size:2.5rem;color: black;center;center;"),
+    #   style =
+    #          "padding-top: 10px;
+    #          padding-bottom: 5px;
+    #          margin-top: 3px;
+    #          display: flex;
+    #          align-items: center;
+    #          justify-content: space-evenly;"
+    # )),
     column(width=12,
     box(width=12,title = strong("Select institutions and input cutoff p-value",style="font-size: 2.0rem;"),
         solidHeader=F,status="warning",
