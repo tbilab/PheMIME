@@ -193,6 +193,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
           # otherwise add it to the selection
           annotated_points(c(old_selection, selected_point))
         }
+        session$resetBrush(input$point_brush$brushId)
       })
       ##click
       observeEvent(input$point_click, {
@@ -325,7 +326,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       #===============================================
       ##table output of selected phecodes
       #===============================================
-      code_data_vandy_mgh = reactive({code_data() %>% drop_na(z_vandy_mgh) %>% arrange(desc(z_vandy_mgh))})
+      code_data_vandy_mgh = reactive({code_data() %>% drop_na(glue("{(type_label)}_vandy_mgh")) %>% arrange(desc(glue("{(type_label)}_vandy_mgh")))})
       
       table_data1 = reactive({
         code_data_vandy_mgh() %>%
@@ -403,7 +404,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       )
       
       #vandy vs ukbb
-      code_data_vandy_ukbb = reactive({code_data() %>% drop_na(z_vandy_ukbb) %>% arrange(desc(z_vandy_ukbb))})
+      code_data_vandy_ukbb = reactive({code_data() %>% drop_na(glue("{(type_label)}_vandy_ukbb")) %>% arrange(desc(glue("{(type_label)}_vandy_ukbb")))})
       table_data2 = reactive({
         code_data_vandy_ukbb() %>%
           dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),
@@ -462,7 +463,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       )
       
       ## mgh vs ukbb
-      code_data_mgh_ukbb = reactive({code_data() %>% drop_na(z_mgh_ukbb) %>% arrange(desc(z_mgh_ukbb))})
+      code_data_mgh_ukbb = reactive({code_data() %>% drop_na(glue("{(type_label)}_mgh_ukbb")) %>% arrange(desc(glue("{(type_label)}_mgh_ukbb")))})
       table_data3 = reactive({
         code_data_mgh_ukbb() %>%
           dplyr::select(phecode,description,category,glue("{(type_label)}_vandy"),

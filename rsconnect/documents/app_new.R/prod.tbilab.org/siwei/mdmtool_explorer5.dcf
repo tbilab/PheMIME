@@ -5,7 +5,7 @@ account: siwei
 server: prod.tbilab.org
 hostUrl: https://prod.tbilab.org/__api__
 appId: 495
-bundleId: 2715
+bundleId: 2718
 url: https://prod.tbilab.org/PheMIME/
 asMultiple: FALSE
 asStatic: FALSE
