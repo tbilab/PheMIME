@@ -7,6 +7,8 @@ navbar:
       href: overview.html
     - text: "Appendix: Usage example"
       href: usage_example.html
+    - text: "Appendix: Case Study"
+      href: case_study.html
 output:
   html_document:
     theme: paper

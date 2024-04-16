@@ -1,0 +1,12 @@
+name: phemime_supplementary
+title: PheMIME supplementary
+username: siwei
+account: siwei
+server: prod.tbilab.org
+hostUrl: https://prod.tbilab.org/__api__
+appId: 660
+bundleId: 2744
+url: https://prod.tbilab.org/content/37c75b14-6723-4dda-a8c8-60830e6781e2/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
