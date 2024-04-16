@@ -179,12 +179,7 @@ ggplot(age_dat, aes(x..x.y., fill= pregnancy_complications)) +
 
 # PheMIME analysis
 
-- It can indicate associationSubgraph could identify specific subgroups of patients due to different biological mechanisms, which indicates the associationsubgraphs in PheMIME could identify subgroups of patients, and colors help researchers identify those subgraphs co-occurr very often with the selected disease, that is to identify subgroups of patients that highly co-occurr with the selected disease
-
-
-
-- Choose a pregnancy complications phenotype
-
+<!-- - It can indicate associationSubgraph could identify specific subgroups of patients due to different biological mechanisms, which indicates the associationsubgraphs in PheMIME could identify subgroups of patients, and colors help researchers identify those subgraphs co-occurr very often with the selected disease, that is to identify subgroups of patients that highly co-occurr with the selected disease -->
 
 # Conclusion
 
