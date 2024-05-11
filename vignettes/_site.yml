@@ -1,14 +1,23 @@
-name: "Multi-Institutional Multimorbidity Explorer"
+name: "Phenome-wide Multi-Institutional Multimorbidity Explorer Appendix"
 navbar:
-  title: "Multi-Institutional Multimorbidity Explorer"
+  title: "PheMIME Appendix"
   type: inverse
   left:
-    - text: "Appendix: Detailed Overview"
+    - text: "Overview and User Manual"
       href: overview.html
-    - text: "Appendix: Usage example"
-      href: usage_example.html
-    - text: "Appendix: Case Study"
-      href: case_study.html
+    # - text: "User Manual"
+    #   href: usage_example.html
+    - text: "Case Studies"
+      menu:
+        - text: "Identification of Robust Disease Condition CLusters"
+          href: case_study3.html
+        - text: "Shared Biological Mechanisms of Cancers Associated with Schizophrenia"
+          href: case_study4.html
+        - text: "PheWAS Associations with Hydronephrosis"
+          href: case_study2.html  
+        - text: "JAK2V617F Mutation and Pregnancy Complications"
+          href: case_study1.html
+    
 output:
   html_document:
     theme: paper

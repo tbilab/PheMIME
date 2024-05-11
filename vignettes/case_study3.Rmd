@@ -1,0 +1,108 @@
+---
+title: "Identification of Robust Disease Condition Clusters"
+author: Siwei Zhang
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+  style_switcher: false
+  thumbnails: no
+  lightbox: yes
+  gallery: no
+  highlight: tango
+  use_bookdown: no
+  toc_depth: 6
+  fig_caption: yes
+  embed_fonts: no
+  keep_md: no
+  number_sections: yes
+bibliography: references.bib  
+csl: apa.csl
+---
+
+```{r, include = FALSE}
+# knitr::opts_chunk$set(
+#   collapse = TRUE,
+#   comment = "#>"
+# )
+embed_png <- function(image_title, width = "100%") {
+  knitr::asis_output(
+    glue::glue("<div style=\"text-align: center;\">",
+                 "<img src=\"{image_title}\" width={width} />",
+               "</div>")
+  )
+}
+```
+
+# Introduction
+
+- In PheMIME, we integrate a dynamic network clustering technique called the associationSubgraphs$^{1}$. This is an interactive clustering approach identifies subgraphs, or disease clusters, in multimorbidity networks by leveraging the principles of threshold graph construction. This method enables systematic discovery of disease clusters by allowing users to dynamically adjust the threshold for each unique comorbidity strength value. 
+
+# Overall Network 
+
+- In the overall network of each EHR system across VUMC, MGB and UK Biobank, several prominent disease condition clusters were identified, refining previously reported clusters.  
+
+### VUMC multimorbidity network
+
+```{r, echo = FALSE}
+embed_png("cluster_vumc.png")
+```
+
+### MGB multimorbidity network
+
+```{r, echo = FALSE}
+embed_png("cluster_mgb.png")
+```
+
+### Combined VUMC and MGB multimorbidity network
+
+```{r, echo = FALSE}
+embed_png("cluster_vumc_mgb.png")
+```
+
+# Case Study: Schizophrenia
+
+We utilized schizophrenia as an example to illustrate the process of discovering disease condition clusters via associationSubgraphs within PheMIME. 
+
+1.	Identify multimorbidities associated with schizophrenia across different systems and explore disease clusters at specified statistical significance levels through the Multimorbidity Network Visualization module.
+
+2.	Identify consistent disease phenotypes based on comorbidity strength as shown in the Manhattan and Scatter plot through the Reproducible Multimorbidities Exploration module and visualize the disease subgraphs using associationSubgraphs.
+
+3.	Similarly, identify consistent disease phenotypes based on multimorbidity similarities in the Manhattan and Scatter plot through the Multimorbidity Similarities Exploration module and visualize the disease subgraphs using associationSubgraphs.
+
+4.	Supplement these findings with arbitrary disease phenotypes of interest by selecting them from the customizable table through the Reproducible Multimorbidities Exploration or Multimorbidity Similarities Exploration modules. Incorporate them into the final selection by clicking the Update Manhattan/Scatter button.
+
+### Consistent presence of disease cluster that strongly associated with schizophrenia are enriched in certain cancers.
+
+```{r, echo = FALSE}
+embed_png("schizopherenia_figure1.png")
+```
+
+### Consistent presence of disease cluster that highly co-occurred with schizophrenia are enriched in Viral hepatitis B and C
+
+```{r, echo = FALSE}
+embed_png("schizophrenia_cancer_hepatitis.png")
+```
+
+### Conclusion
+
+Previous studies have indicated that individuals with schizophrenia may exhibit a slightly elevated risk of certain types of cancer, such as colon cancer and breast cancer. Our comprehensive analysis highlights the utility of PheMIME in exploring clusters of clinical disease phenotypes. Specifically, our findings reveal the identification of subgraphs enriched in cancers. Figure 2 illustrates the consistent presence of multimorbidities strongly associated with schizophrenia across multiple systems, with associations maintained under a specified p-value cutoff of 0.05. In our analysis, nodes color-filled based on disease categories indicate that phenotypes associated under the specified statistical significance level with schizophrenia primarily include cancers such as colon cancer and breast cancer, which are known to be related to schizophrenia. Notably, we also observe the melanoma within the same subgraph, which has rarely been explored in previous studies. This finding may offer valuable insights for further research and discovery, which we will explore in the next **Case Study: Explore shared biological mechanisms**.
+
+# References
+
+<!-- <div id="refs"></div> -->
+
+<!-- Strayer, N., Vessels, T. J., Choi, K. W., Zhang, S., Li, Y., Sharber, B., Hsi, R. S., Bejan, C. A., Bick, A. G., Balko, J. M., Johnson, D. B., Wheless, L. E., Wells, Q. S., Shah, R. v, Phillips, E. J., Self, W. H., Pulley, J. M., Wilkins, C. H., Chen, Q., … Xu, Y. (2024). Interoperability of phenome-wide multimorbidity patterns: a comparative study of two large-scale EHR systems. MedRxiv, 2024.03.28.24305045. https://doi.org/10.1101/2024.03.28.24305045 -->
+
+1. Strayer, N., Zhang, S., Yao, L., Vessels, T., Bejan, C. A., Hsi, R. S., Shirey-Rice, J. K., Balko, J. M., Johnson, D. B., Phillips, E. J., Bick, A., Edwards, T. L., Velez Edwards, D. R., Pulley, J. M., Wells, Q. S., Savona, M. R., Cox, N. J., Roden, D. M., Ruderfer, D. M., & Xu, Y. (2023). Interactive network-based clustering and investigation of multimorbidity association matrices with associationSubgraphs. Bioinformatics, 39(1). https://doi.org/10.1093/bioinformatics/btac780
+
+
+<!-- - Identify the most consistent clinical disease phenotypes based on comorbidity strength as shown in the Manhattan and Scatter plot through the module of Reproducible Multimorbidities Exploration. Supplement these findings with known disease phenotypes highly correlated with schizophrenia by selecting them from the customizable table through the module of Reproducible Multimorbidities Exploration or Multimorbidity Similarities Exploration. Incorporate them into the final selection by clicking the Update Manhattan/Scatter button. -->
+
+
+
+
+
+
+
+
+

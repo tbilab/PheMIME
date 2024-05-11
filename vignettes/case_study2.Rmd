@@ -1,0 +1,87 @@
+---
+title: "PheWAS Associations with Hydronephrosis"
+author: Siwei Zhang
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+  style_switcher: false
+  thumbnails: no
+  lightbox: yes
+  gallery: no
+  highlight: tango
+  use_bookdown: no
+  toc_depth: 6
+  fig_caption: yes
+  embed_fonts: no
+  keep_md: no
+  number_sections: yes
+# bibliography: references.bib
+# csl: apa-single-spaced.csl
+---
+
+```{r, include = FALSE}
+# knitr::opts_chunk$set(
+#   collapse = TRUE,
+#   comment = "#>"
+# )
+embed_png <- function(image_title, width = "100%") {
+  knitr::asis_output(
+    glue::glue("<div style=\"text-align: center;\">",
+                 "<img src=\"{image_title}\" width={width} />",
+               "</div>")
+  )
+}
+```
+
+# Introduction
+
+- PheMIME$^1$ enables users to explore phenome-wide causal associations. We utilized hydronephrosis as a case study to exemplify the effectiveness of the PheMIME in uncovering the established causes of hydronephrosis while also suggesting less common causes of hydronephrosis.
+
+
+# PheMIME analysis
+
+The discovery process of phenome-wide causal associations in hydronephrosis was conducted through the 'Reproducible Multimorbidities Exploration' and 'Multimorbidity Similarities Exploration' modules in PheMIME.
+
+- **Robust and Consistent Comorbidities**:
+
+  The robust and consistent comorbidities associated with hydronephrosis, which included well-known causes such as **obstructing stones in the ureter**, **vesicoureteral reflux**, and **congenital defects were identified**.
+
+- **Less Common Causes** 
+
+  Additionally, less common causes of hydronephrosis were discovered, including **certain cancers**, **urethral stricture**, and **abnormal renal vasculature**.
+
+- **Complex Causative Patterns**
+
+  Our analysis also revealed complex causative patterns of conditions related to hydronephrosis, such as **pyelonephritis** and **E. coli infection**, consistent with the known knowledge that obstruction and stagnation of urine is presumed to be the reason for predisposition to pyelonephritis and E. coli contributes as a predominant pathogen to the etiology of pyelonephritis and urinary tract infections. However, we also noticed multiple types of conditions related to **mineral metabolism**, likely to have a possible genetic component that could predispose to renal calculi and hydronephrosis. These unexpected findings underscore the potential of PheMIME to reveal novel disease associations for further investigation.
+
+### Reproducible Multimorbidities Exploration
+
+- Identify the most consistent and top-co-occurred clinical disease phenotypes based on comorbidity strength from the Manhattan and Scatter plot through the module of **Reproducible Multimorbidities Exploration**. 
+
+```{r, echo = FALSE}
+embed_png("hydronephrosis_multimorbidity.png")
+```
+
+### Multimorbidity Similarities Exploration
+
+- Identify the most consistent and top clinical disease phenotypes with significant multimorbidity similarities (how these phenotypes connect to other phecodes in the network) through the module of **Multimorbidity Similarities Exploration**. 
+
+```{r, echo = FALSE}
+embed_png("hydronephrosis_similarity.png")
+```
+
+# References
+
+1. Zhang, S., Strayer, N., Vessels, T., Choi, K., Wang, G. W., Li, Y., Bejan, C. A., Hsi, R. S., Bick, A. G., Velez Edwards, D. R., Savona, M. R., Philips, E. J., Pulley, J., Self, W. H., Hopkins, W. C., Roden, D. M., Smoller, J. W., Ruderfer, D. M., & Xu, Y. (n.d.). PheMIME: An Interactive Web App and Knowledge Base for Phenome-Wide, Multi-Institutional Multimorbidity Analysis. https://doi.org/10.1101/2023.07.23.23293047
+
+
+
+
+
+
+
+
+
+
+
+

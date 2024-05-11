@@ -5,7 +5,5 @@ account: siwei
 server: prod.tbilab.org
 hostUrl: https://prod.tbilab.org/__api__
 appId: 570
-bundleId: 2334
+bundleId: 2805
 url: https://prod.tbilab.org/PheMIME_supplementary_materials/
-when: 1688882212.56842
-lastSyncTime: 1688882212.56845

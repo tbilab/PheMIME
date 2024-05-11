@@ -11,7 +11,8 @@ source("modules/scatter_plot.R")
 source("modules/comorbidity_subnetwork.R")
 
 
-starting_code <- "295.10"
+# starting_code <- "295.10"
+starting_code = "289.90"
 # Used in data table to both select correct row and navigate table to that row
 start_index <- which(phecodes$phecode == starting_code)
 
@@ -73,7 +74,18 @@ ui <- navbarPage(div(strong("Multi-Institutional Multimorbidity Explorer"),style
                                          ),
                                          hr(),
                                          DTOutput('code_selection')
-                     ))
+                     )),
+                     hr(),
+                     div(p("Designed by @Xu TBI Lab. All rights reserved.",
+                           style="text-align: center;
+                                  color: black; font-size: 1.5rem;")
+                     ),
+                     tags$div(style = "text-align: center;
+                                  color: black; font-size: 1.5rem;",
+                       "Your feedback is valuable to us! Please share your comments and suggestions by submitting an issue on our GitHub page",
+                       tags$a(href="https://github.com/tbilab/PheMIME/issues", 
+                              "Github Issues")
+                     )
                    )
                  ),
                  #==================================================================================

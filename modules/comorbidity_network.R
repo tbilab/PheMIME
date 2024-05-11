@@ -54,7 +54,9 @@ comorbidity_networkPlot = function(id){
         ns=ns,
         withSpinner(r2d3::d3Output(ns("comorbidity_network_plot"),width = "100%", height = "550px"),
                     hide.ui = FALSE)
-      )
+      ),
+      # div(p("Github: https://github.com/tbilab/associationsubgraphs")),
+      # div(p("Reference: Strayer,N. et al. (2022) [Interactive network-based clustering and investigation of multimorbidity association matrices with associationSubgraphs](https://doi.org/10.1093/bioinformatics/btac780). Bioinformatics, 39, btac780."))
     # )
     )
   ))
@@ -258,8 +260,9 @@ comorbidity_networkServer = function(id,code_description,code_id) {
                              selectedData()[["association_pairs"]],
                              node_info = selectedData()[["node_info"]],
                              subgraph_results = selectedData()[["subgraphs"]],
-                             trim_subgraph_results = TRUE,
-                             pinned_node = code_description()
+                             trim_subgraph_results = TRUE
+                             # ,
+                             # pinned_node = code_description()
                            )
                          } else{
                           subgraph=visualize_subgraph_structure(

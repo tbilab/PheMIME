@@ -1,5 +1,5 @@
 ---
-title: "Multi-Institutional Multimorbidity Explorer Usage Example"
+title: "Phenome-wide Multi-Institutional Multimorbidity Explorer Usage Example"
 author: Siwei Zhang
 date: "`r Sys.Date()`"
 output:
@@ -40,7 +40,7 @@ embed_png <- function(image_title, width = "100%") {
 
 # Introduction
 
-Here we describe a sample use-case of the Multi-Institutional Disease Multimorbidity Explorer for investigating the results of the diseasome-wide multimorbidities analysis corresponding to Schizophrenia. We show step-by-step that the utility of the Multi-Institutional Disease Multimorbidity Explorer and how it can conduct analysis in a more efficient way to identify new discoveries of unknown disease associations and make inference of the causal path toward specific diseases, and provide an approach to compare and validate the reproducibility of multimorbidity across multiple institutions. 
+Here we describe a sample use-case of PheMIME for investigating the results of the diseasome-wide multimorbidities analysis corresponding to Schizophrenia. We show step-by-step that the utility of the PheMIME and how it can conduct analysis in a more efficient way to explore clusters of clinical disease phenotypes, uncovering causal disease relationships and identify potential novel genetic causes.
 
 # Main app
 
@@ -75,40 +75,41 @@ embed_png("consistency_vumc_ukbb.png")
 
 ### Multimorbidity Network Visualization
 
-Users can visualize the high-dimensional summary statistics from the association analysis in a more efficient way to identify new discoveries of unknown disease associations. By integrating a dynamic network visualization and clustering methodology called associationSubgraphs, users can examine and compare the multimorbidity networks constructed based on the multimorbidity strength measurements. This module permits exploration of the network's subgraph structures and dynamic clustering for any multimorbidity network from a single institution or an amalgamation of multiple institutions. Moreover, this module enables users to apply filters and emphasize any significant multimorbidities and investigate their interconnections and enriched subgraphs. We demonstrate the discovery using __Schizophrenia__ example. 
-
-After Bonferroni correction for 1,701 tests (p < $2.94*10^{-5}$) and given the multimorbidity strength threshold at 43.47, it is not surprised that there are a lot of phecodes in the mental disorders category including psychosis, suicidal ideation, bipolar disorder, suicidal ideation or attempt, conduct disorders, mood disorders, and hallucinations significantly associated with __Schizophrenia__. And another significant and non-psychiatric group is __neurological__ including eepilepsy, recurrent seizures, convulsions and so on. The second group of non-psychiatric multimorbidities was __injuries and poisonings__: poisoning by psychotropic agents; poisoning by anticonvulsants and anti-Parkinsonism drugs; adverse drug events and drug allergies; and toxic effect of other substances, chiefly nonmedicinal as to source. 
-
-By viewing the phenotypes that significantly co-occurred with __Schizophrenia__ which denoted with colors in the network plot, we discovered a strong comorbidity with Viral Hepatitis. For example, if looking at the data from VUMC, after setting significance level at $2.94*10^{-5}$ and strength threshold at $39.661$, we can see infectious disease of __viral hepatitis__ and __viral hepatitis C__ are significantly associated with __Schizophrenia__ and are clustered into the same group, while the causal relationship between __viral hepatitis__ and __Schizophrenia__ is unknown but they are connected to __Schizophrenia__ through __Biporlar__. One of the possible reasons is that the adverse influence of __viral hepatitis__ cause the brain to be more vulnerable to neuroinflammation and therefore increases the risk of __Biporlar__, which lead to __Schizophrenia__. We can see the similar path when using MGB data when setting significance level at $2.94*10^{-5}$ and strength threshold at $38.126$.
+Users can visualize the high-dimensional summary statistics from the association analysis in a more efficient way to identify new discoveries of unknown disease associations. By integrating a dynamic network visualization and clustering methodology called associationSubgraphs, users can examine and compare the multimorbidity networks constructed based on the multimorbidity strength measurements. This module permits exploration of the network's subgraph structures and dynamic clustering for any multimorbidity network from a single institution or an amalgamation of multiple institutions. Moreover, this module enables users to apply filters and emphasize any significant multimorbidities and investigate their interconnections and enriched subgraphs. 
+<!-- We demonstrate the discovery using __Schizophrenia__ example.  -->
 
 ```{r, echo = FALSE}
 embed_png("multimorbidity_network_overall_sch.png")
 ```
 
-#### VUMC
+<!-- After Bonferroni correction for 1,701 tests (p < $2.94*10^{-5}$) and given the multimorbidity strength threshold at 43.47, it is not surprised that there are a lot of phecodes in the mental disorders category including psychosis, suicidal ideation, bipolar disorder, suicidal ideation or attempt, conduct disorders, mood disorders, and hallucinations significantly associated with __Schizophrenia__. And another significant and non-psychiatric group is __neurological__ including eepilepsy, recurrent seizures, convulsions and so on. The second group of non-psychiatric multimorbidities was __injuries and poisonings__: poisoning by psychotropic agents; poisoning by anticonvulsants and anti-Parkinsonism drugs; adverse drug events and drug allergies; and toxic effect of other substances, chiefly nonmedicinal as to source.  -->
 
-```{r, echo = FALSE}
-embed_png("multimorbidity_overall_inf_mgb.png")
-# embed_png("multimorbidity_overall_psy.png")
-```
+<!-- By viewing the phenotypes that significantly co-occurred with __Schizophrenia__ which denoted with colors in the network plot, we discovered a strong comorbidity with Viral Hepatitis. For example, if looking at the data from VUMC, after setting significance level at $2.94*10^{-5}$ and strength threshold at $39.661$, we can see infectious disease of __viral hepatitis__ and __viral hepatitis C__ are significantly associated with __Schizophrenia__ and are clustered into the same group, while the causal relationship between __viral hepatitis__ and __Schizophrenia__ is unknown but they are connected to __Schizophrenia__ through __Biporlar__. One of the possible reasons is that the adverse influence of __viral hepatitis__ cause the brain to be more vulnerable to neuroinflammation and therefore increases the risk of __Biporlar__, which lead to __Schizophrenia__. We can see the similar path when using MGB data when setting significance level at $2.94*10^{-5}$ and strength threshold at $38.126$. -->
 
-#### MGB
+<!-- #### VUMC -->
 
-```{r, echo = FALSE}
-embed_png("multimorbidity_overall_inf_vumc.png")
-# embed_png("multimorbidity_overall_nonpsy.png")
-```
+<!-- ```{r, echo = FALSE} -->
+<!-- embed_png("multimorbidity_overall_inf_mgb.png") -->
+<!-- # embed_png("multimorbidity_overall_psy.png") -->
+<!-- ``` -->
 
-### Improvement compared to static Manhattan plot
+<!-- #### MGB -->
 
-We can also directly see the improvement of utilizing this tool compared with the static manhattan plot. The static manhattan plot is hard to visualize all significant phenotypes associated with Schizophrenia. And it does not contain the hidden information of disease subgraphs. It raises a question as well, what if the users only want to select some of their interested phenotypes among all these phenotypes? The next page of “Explore multimorbidity” provides a more detailed application on it.
+<!-- ```{r, echo = FALSE} -->
+<!-- embed_png("multimorbidity_overall_inf_vumc.png") -->
+<!-- # embed_png("multimorbidity_overall_nonpsy.png") -->
+<!-- ``` -->
 
-```{r,echo=FALSE}
-embed_png("sch_manhattan.png")
-```
+<!-- ### Improvement compared to static Manhattan plot -->
+
+<!-- We can also directly see the improvement of utilizing this tool compared with the static manhattan plot. The static manhattan plot is hard to visualize all significant phenotypes associated with Schizophrenia. And it does not contain the hidden information of disease subgraphs. It raises a question as well, what if the users only want to select some of their interested phenotypes among all these phenotypes? The next page of “Explore multimorbidity” provides a more detailed application on it. -->
+
+<!-- ```{r,echo=FALSE} -->
+<!-- embed_png("sch_manhattan.png") -->
+<!-- ``` -->
 
 
-## Explore multimorbidity
+## Explore multimorbidity and multimorbidity similarity
 
 PheMIME allows users to use phenome-wide multimorbidity patterns of __Schizophrenia__ for exploration and network analysis. 
 
@@ -122,31 +123,31 @@ PheMIME allows users to use phenome-wide multimorbidity patterns of __Schizophre
 embed_png("overall.png")
 ```
 
-- Users can also conduct comparative analyses of multimorbidity patterns across different populations. By exploring the interactive Manhattan and scatter plot compared Vanderbilt University Medical Center (VUMC) with Massachusetts General Brigham (MGB), VUMC with UK Biobank (UKB) and MGB with UKB, we discovered a strong comorbidity of __Schizophrenia__ with __Viral Hepatitis B__ and __Viral Hepatitis C__. From the below figures, __Viral Hepatitis__, __Viral Hepatitis B__ and __Viral Hepatitis C__ multimorbidity exhibit both large magnitudes and high consistencies across different systems, it strongly indicates a robust disease multimorbidity across the systems. 
+<!-- - Users can also conduct comparative analyses of multimorbidity patterns across different populations. By exploring the interactive Manhattan and scatter plot compared Vanderbilt University Medical Center (VUMC) with Massachusetts General Brigham (MGB), VUMC with UK Biobank (UKB) and MGB with UKB, we discovered a strong comorbidity of __Schizophrenia__ with __Viral Hepatitis B__ and __Viral Hepatitis C__. From the below figures, __Viral Hepatitis__, __Viral Hepatitis B__ and __Viral Hepatitis C__ multimorbidity exhibit both large magnitudes and high consistencies across different systems, it strongly indicates a robust disease multimorbidity across the systems.  -->
 
-#### VUMC vs MGB
+<!-- #### VUMC vs MGB -->
 
-```{r,echo=FALSE}
-embed_png("hepatitis_vumc_mgb.png")
-```
+<!-- ```{r,echo=FALSE} -->
+<!-- embed_png("hepatitis_vumc_mgb.png") -->
+<!-- ``` -->
 
-#### VUMC vs UKB
+<!-- #### VUMC vs UKB -->
 
-```{r,echo=FALSE}
-embed_png("hepatitis_vumc_ukb.png")
-```
+<!-- ```{r,echo=FALSE} -->
+<!-- embed_png("hepatitis_vumc_ukb.png") -->
+<!-- ``` -->
 
-#### MGB vs UKB
+<!-- #### MGB vs UKB -->
 
-```{r,echo=FALSE}
-embed_png("hepatitis_mgb_ukb.png")
-```
+<!-- ```{r,echo=FALSE} -->
+<!-- embed_png("hepatitis_mgb_ukb.png") -->
+<!-- ``` -->
 
-- Users can further examine in detail of multimorbidity patterns and it is discovered that there is more consistency of comorbidity within the patient cohorts of VUMC and MGB, with the comorbidity intensities being notably stronger in these cohorts as compared to the general UK population represented by the UK Biobank (UKB) cohort, especially in the case of __Viral Hepatitis B__. This distinction could underscore the heterogeneity effect due to population differences and, as the exact reasons and mechanisms behind __Viral Hepatitis__ and __Schizophrenia__ remain elusive, the observed disparities among different cohorts might provide intriguing insights, pave the way for additional investigation, potentially leading to new understanding of the mechanisms and elucidating the impact of population differences on disease multimorbidity patterns.
+<!-- - Users can further examine in detail of multimorbidity patterns and it is discovered that there is more consistency of comorbidity within the patient cohorts of VUMC and MGB, with the comorbidity intensities being notably stronger in these cohorts as compared to the general UK population represented by the UK Biobank (UKB) cohort, especially in the case of __Viral Hepatitis B__. This distinction could underscore the heterogeneity effect due to population differences and, as the exact reasons and mechanisms behind __Viral Hepatitis__ and __Schizophrenia__ remain elusive, the observed disparities among different cohorts might provide intriguing insights, pave the way for additional investigation, potentially leading to new understanding of the mechanisms and elucidating the impact of population differences on disease multimorbidity patterns. -->
 
-```{r,echo=FALSE}
-embed_png("hepatitis_table.png")
-```
+<!-- ```{r,echo=FALSE} -->
+<!-- embed_png("hepatitis_table.png") -->
+<!-- ``` -->
 
 
 

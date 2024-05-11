@@ -66,8 +66,10 @@ annotationPlot <- function(id) {
                         column(12,div(actionButton(ns("update_subgraph_vandy_mgh"), "Visualize associationSubgraphs"),
                                       style="float:right")),
                         column(12,div(style = "height:30px")),
-                        column(12,uiOutput(ns("spinner1"))
-                               )))
+                        column(12,uiOutput(ns("spinner1")))
+                        # div(p("Github: https://github.com/tbilab/associationsubgraphs")),
+                        # div(p("Reference: Strayer,N. et al. (2022) [Interactive network-based clustering and investigation of multimorbidity association matrices with associationSubgraphs](https://doi.org/10.1093/bioinformatics/btac780). Bioinformatics, 39, btac780."))
+                        ))
            )
         )
       ), #tabPanel
@@ -110,7 +112,10 @@ annotationPlot <- function(id) {
                        column(12,div(actionButton(ns("update_subgraph_vandy_ukbb"), "Visualize associationSubgraphs"),
                                      style="float:right")),
                        column(12,div(style = "height:30px")),
-                       column(12,uiOutput(ns("spinner2")))))
+                       column(12,uiOutput(ns("spinner2")))
+                       # div(p("Github: https://github.com/tbilab/associationsubgraphs")),
+                       # div(p("Reference: Strayer,N. et al. (2022) [Interactive network-based clustering and investigation of multimorbidity association matrices with associationSubgraphs](https://doi.org/10.1093/bioinformatics/btac780). Bioinformatics, 39, btac780."))
+                       ))
                  )
                )
       ), #tabPanel
@@ -153,7 +158,10 @@ annotationPlot <- function(id) {
                        column(12,div(actionButton(ns("update_subgraph_mgh_ukbb"), "Visualize associationSubgraphs"),
                                      style="float:right")),
                        column(12,div(style = "height:30px")),
-                       column(12,uiOutput(ns("spinner3")))))
+                       column(12,uiOutput(ns("spinner3")))
+                       # div(p("Github: https://github.com/tbilab/associationsubgraphs")),
+                       # div(p("Reference: Strayer,N. et al. (2022) [Interactive network-based clustering and investigation of multimorbidity association matrices with associationSubgraphs](https://doi.org/10.1093/bioinformatics/btac780). Bioinformatics, 39, btac780."))
+                       ))
                  )
                )
       ) #tabPanel
@@ -193,6 +201,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
           # otherwise add it to the selection
           annotated_points(c(old_selection, selected_point))
         }
+        #remove the previous selection, solve the flashing twice issue since the previous box still there if not removing it
         session$resetBrush(input$point_brush$brushId)
       })
       ##click
@@ -223,8 +232,9 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
       observeEvent(input$dump_annotations, {
         annotated_points(c(0))
       })
+      ## when user change into another selected code
       observeEvent(code_description(),annotated_points(c(0)))
-
+      # observeEvent(code_description(), updateActionButton(session$ns,update_subgraph_vandy_mgh,))
 
       #======================================================
       #specify the institution
@@ -239,7 +249,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
                        value=0,{
           incProgress(0.5,detail = "associationSubgraphs are running")               
           subgraph = comorbidity_subnetwork(com_sim,isolate(annotated_points()),
-                                 paste0(glue("{(type_label)}_vandy_mgh")),code_description)
+                                 paste0(glue("{(type_label)}_vandy_mgh")),isolate(code_description()))
           incProgress(0.4, detail = "Nearly done, associationSubgraphs will show in 10 seconds!")
           Sys.sleep(5)
           })
@@ -248,8 +258,9 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
         
         output$spinner1 = renderUI({
           withSpinner(r2d3::d3Output(session$ns("plot3_vandy_mgh"),width = "100%", height = "690px"),
-                      hide.ui = FALSE)
+                      hide.ui = F)
         })
+        removeModal()
       })
 
       observeEvent(input$update_subgraph_vandy_ukbb,{
@@ -258,7 +269,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
                        value=0,{
                          incProgress(0.5,detail = "associationSubgraphs are running")                
                          subgraph = comorbidity_subnetwork(com_sim,isolate(annotated_points()),
-                                                           paste0(glue("{(type_label)}_vandy_ukbb")),code_description)
+                                                           paste0(glue("{(type_label)}_vandy_ukbb")),isolate(code_description()))
                          incProgress(0.4, detail = "Nearly done, associationSubgraphs will show in 10 seconds!")
                          Sys.sleep(5)
                        })
@@ -269,6 +280,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
           withSpinner(r2d3::d3Output(session$ns("plot3_vandy_ukbb"),width = "100%", height = "690px"),
                       hide.ui = FALSE)
         })
+        removeModal()
       })
 
       observeEvent(input$update_subgraph_mgh_ukbb,{
@@ -277,7 +289,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
                        value=0,{
                          incProgress(0.5,detail = "associationSubgraphs are running")                
                          subgraph = comorbidity_subnetwork(com_sim,isolate(annotated_points()),
-                                                           paste0(glue("{(type_label)}_mgh_ukbb")),code_description)
+                                                           paste0(glue("{(type_label)}_mgh_ukbb")),isolate(code_description()))
                          incProgress(0.4, detail = "Nearly done, associationSubgraphs will show in 10 seconds!")
                          Sys.sleep(5)
                        })
@@ -288,6 +300,7 @@ annotationPlotServer <- function(id, code_id, code_data, type, type_label,plot_f
           withSpinner(r2d3::d3Output(session$ns("plot3_mgh_ukbb"),width = "100%", height = "690px"),
                       hide.ui = FALSE)
         })
+        removeModal()
       })
 
       #===============================================

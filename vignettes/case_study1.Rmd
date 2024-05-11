@@ -1,0 +1,300 @@
+---
+title: "JAK2V617F Mutation and Pregnancy Complications"
+author: Siwei Zhang
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+  style_switcher: false
+  thumbnails: no
+  lightbox: yes
+  gallery: no
+  highlight: tango
+  use_bookdown: no
+  toc_depth: 6
+  fig_caption: yes
+  embed_fonts: no
+  keep_md: no
+  number_sections: yes
+# bibliography: references.bib
+# csl: apa2.csl
+# include-in-header:
+#   - text: |
+#       <style type="text/css">
+#       ul li ul li {
+#         font-size: 0.5em;
+#       }
+#       </style>
+---
+<!-- <style type="text/css"> -->
+<!-- .main-container { -->
+<!-- max-width: 3000px; -->
+<!-- margin-left: auto; -->
+<!-- margin-right: auto; -->
+<!-- } -->
+<!-- </style> -->
+
+```{r, include = FALSE}
+# knitr::opts_chunk$set(
+#   collapse = TRUE,
+#   comment = "#>"
+# )
+embed_png <- function(image_title, width = "100%") {
+  knitr::asis_output(
+    glue::glue("<div style=\"text-align: center;\">",
+                 "<img src=\"{image_title}\" width={width} />",
+               "</div>")
+  )
+}
+```
+
+# Background
+
+- The JAK2V617F mutation is a somatic mutation in the Janus kinase 2 (JAK2) gene, located on chromosome 9p. Deep sequencing techniques allow for sensitive and accurate detection of the JAK2V617F mutation in patient samples. The Vanderbilt MEGA Genotype Biobank is a large-scale genetic repository and we currently conduct analysis based on a cohort of ~100,000 who also have the linked EHR data, within this subset cohort, we applied deep sequencing and have identified a cohort of 789 patients with JAK2V617F mutation, and treat other patients as the JAK2V617F mutation non-carriers.
+
+- It's essential to note that while the presence of the JAK2V617F mutation may predispose individuals to myeloproliferative neoplasms (MPNs), polycythemia vera (PV), or essential thrombocythemia (ET), not all carriers of this mutation will develop clinically evident disease. Individuals with a higher variant allele frequency (VAF) of the JAK2V617F mutation are more likely to exhibit overt MPN phenotypes and may be diagnosed with specific MPN subtypes based on established clinical criteria. However, there are also individuals with lower VAF who may harbor the mutation but do not manifest clinically apparent MPN phenotypes.
+
+- Our exploratory analysis below on multimorbidity similarities based on a subset VUMC cohort with genetic data revealed a set of pregnancy complication conditions all linked to abnormality of red blood cells, enriched in patients carry JAK2 mutation. We further validated that JAK2 mutation carriers have significantly higher risk of pregnancy complications.
+
+<!-- - We are interested in exploring clinical disease phenotype clusters beyond the myeloproliferative neoplasm (MPN) subtypes associated with the JAK2V617F mutation. Specifically, we seek to investigate potential disease predispositions among subjects with lower variant allele frequency (VAF) of the JAK2V617F mutation. Additionally, we are interested in identifying potential novel genetic causes. -->
+
+# Exploratory analysis
+
+### **Discover Multimorbidities enriched in JAK2V617F mutation carriers**
+
+- We conducted multimorbidity analyses the same to those outlined in **PheMIME**$^1$, but in two distinct phases. Initially, we performed separate analyses for individuals carrying the JAK2V617F mutation and those without it. For each group, we constructed a multimorbidity network. In each analysis, logistic regressions were executed, adjusting for the patient's age at the last recorded visit, sex, race, and the count of unique phecodes present in the patient's records. For every pair of two phecodes, two conditions were considered: one where phecode A was the outcome and phecode B was the independent variable, and vice versa.
+
+  phecode_a ~ phecode_b+age at last recorded visit+sex+race+phecode burden
+
+  phecode_b ~ phecode_a+age at last recorded visit+sex+race+phecode burden
+
+<!-- - We excluded disease pairs that showed significant prevalence among JAK2V617F non-carriers. Subsequently, we identified disease phenotypes enriched in the JAK2V617F carrier multimorbidity network and integrated them into associationSubgraphs. -->
+
+```{r,echo=FALSE, eval=F,cache=FALSE, warning=FALSE,message=FALSE}
+### associationsubgraph
+library(tidyverse)
+library(glue)
+# install.packages("/home/siwei/associationsubgraphs",repos=NULL, type="source")
+library(associationsubgraphs,lib.loc = .libPaths()[2])
+library(phewasHelper)
+# load("phecode_def.rda")
+
+multimorbidity_network = readRDS("multimorbidity_network.rds")
+
+associationsubgraphs::visualize_subgraph_structure(
+  multimorbidity_network[[1]],
+  node_info = multimorbidity_network[[2]],
+  subgraph_results = multimorbidity_network[[3]],
+  trim_subgraph_results = TRUE
+)
+
+
+```
+
+<!-- - To assess **structure equivalence** within the similarity network, indicating a high correlation between each pair of phenotypes in the multimorbidity pattern, we performed analogous analyses to those described in **PheMIME**.  -->
+
+- Disease pairs prevalent among JAK2-V617F non-carriers in the multimorbidity similarity networks were excluded. Subsequently, we identified disease phenotypes enriched in the JAK2V617F carrier multimorbidity similarity network.
+
+```{r,echo=FALSE, cache=FALSE, warning=FALSE,message=FALSE}
+similarity_network = readRDS("similarity_network.rds")
+
+associationsubgraphs::visualize_subgraph_structure(
+  similarity_network[[1]],
+  node_info = similarity_network[[2]],
+  subgraph_results = similarity_network[[3]],
+  trim_subgraph_results = TRUE
+)
+```
+
+### **Abnormality of red blood cells** and **Pregnancy complications**
+
+- **Abnormality of red blood cells** is in the center surrounded by a bunch of **pregnancy complications**. Patients with **abnormality of red blood cells** diagnosis is enriched in JAK2 mutation carrier. **Abnormality of red blood cells** might be treated as an indicator for the presence of JAK2 mutation related conditions and selected as an interested phenotype in PheMIME for further analysis.
+
+- Although not all JAK2V617F mutation carriers exhibit **abnormalities in red blood cells**, there is significant enrichment among those who do, suggesting this as a potential phenotype of interest in **PheMIME**. Patients with **pregnancy complications** is also enriched in JAK2 mutation carrier.
+
+<!-- - Shared phenotypes between **pregnancy complications** and **abnormalities of red blood cells** suggest potential commonalities. Notably, the co-occurrence of these conditions with essential hypertension, malaise and fatigue, and joint pain exceeds expected frequencies. These insights could prove valuable for identifying patient subgroups among pregnant women with pregnancy complications and carrying the JAK2V617F mutation. -->
+
+```{r,echo=FALSE, cache=FALSE, warning=FALSE,message=FALSE,fig.width = 12, fig.height = 12}
+library(boot)
+library(table1)
+library(gtsummary)
+
+jak2_dat = readRDS("jak2_dat.rds") %>%
+  mutate(group = factor(group,levels=c("JAK2 V617F carrier","JAK2 V617F non-carrier")))
+or_fun <- function(data, variable, by, ...) {
+  table(data[[by]], data[[variable]]) %>%
+    fisher.test() %>%
+    broom::tidy()
+}
+jak2_dat %>%
+  dplyr::select(abnormal_redbloodcell, pregnancy_complications,group) %>%
+  tbl_summary(by = group, missing = "no") %>%
+  add_difference(test = everything()~ or_fun) %>%
+  modify_header(estimate ~ "**Odds Ratio**")
+
+# heatmap_dat = readRDS("heatmap_dat.rds")
+# ggplot(heatmap_dat, aes(a, b, fill= strength)) + 
+#   geom_tile()+
+#   labs(x="Phenotypes in subgraph 1", 
+#               y="Diseases co-occur with abnormaility of red blood cells",
+#               title="Heatmap",
+#               subtitle="each cell filled with p-value")+
+#   geom_text(aes(label = p_val)) + 
+#   theme(axis.text=element_text(size=10),
+#         axis.title=element_text(size=10,face="bold"),
+#         axis.text.x = element_text(angle = 30, hjust=1))
+
+```
+
+### **Analysis within pregnant women**
+
+- Among pregnant women, JAK2v617f carriers have significantly higher risk of pregnancy complications. 
+
+<!-- - Among pregnant women, those carrying the JAK2V617F mutation and experiencing pregnancy complications tend to have a younger age at DNA sampling and a lower variant allele frequency (VAF) compared to JAK2V617F carriers without pregnancy complications. Given that women typically experience pregnancy in their 20s or 30s, and JAK2 mutations tend to occur later in life, so if the mutation precedes the onset of these complications, women experiencing complications may have a younger age of onset for their JAK2 mutation compared to those who do not have complications. Additionally, women with a higher VAF may manifest MPN-related phenotypes, which typically occur later in life. If the mutation precedes the onset of complications, then women with complications may not have MPN-related symptoms, resulting in a lower VAF. These findings suggest a potential association between the JAK2V617F mutation and pregnancy complications among pregnant women, **indicating that the occurrence of the JAK2 mutation precedes the onset of pregnancy complications**. -->
+
+```{r,echo=FALSE, cache=FALSE, warning=FALSE,message=FALSE,fig.width = 12, fig.height = 5}
+library(ggplot2)
+jak2_dat %>%
+  dplyr::filter(pregnancy=="pregnant") %>%
+  dplyr::select(pregnancy_complications,group) %>%
+  tbl_summary(by = pregnancy_complications, missing = "no") %>%
+  add_difference(test = everything()~ or_fun) %>%
+  modify_header(estimate ~ "**Odds Ratio**")
+
+## check the DNA sampling age, age at diagnosis of JAK2v617f mutation
+age_dat = jak2_dat %>%
+  dplyr::filter(pregnancy=="pregnant" & group=="JAK2 V617F carrier")
+p1 = ggplot(age_dat, aes(age, fill= pregnancy_complications)) + 
+  geom_density(alpha = 0.3)+
+  labs(x="Age at DNA sampling date", 
+              y="Density",
+              title="Distribution of age at DNA sampling date for JAK2V617F mutation carriers")+
+  theme(axis.text=element_text(size=10),
+        axis.title=element_text(size=10,face="bold"),
+        axis.text.x = element_text(angle = 30, hjust=1))
+
+## predicted VAF for women with pregnancy complications compared to those without pregnancy complications
+p2 = ggplot(age_dat, aes(x..x.y., fill= pregnancy_complications)) + 
+  geom_density(alpha = 0.3)+
+  labs(x="predicted VAF", 
+              y="Density",
+              title="Distribution of VAF for JAK2V617F mutation carriers")+
+theme(axis.text=element_text(size=10),
+        axis.title=element_text(size=10,face="bold"),
+        axis.text.x = element_text(angle = 30, hjust=1))
+
+library(ggpubr)
+
+# ggarrange(p1,p2,ncol=2) 
+```
+
+# PheMIME analysis
+
+- Consistent presence of disease clusters enriched in and strongly associated with MPN diseases across BioVU, MGB and UK Biobank datasets. PheMIME is able to reproduce the known MPN relationship with JAK2 mutation. 
+
+- By adding pregnancy complications manually in the interactive table in the Reproducible Multimorbidities Exploration module, all pregnancy complications are presented as a reproducible subgraphs across BioVU, MGB and UK Biobank datasets. PheMIME is able to reproduce the pregnancy complication relationship with JAK2 mutation and identify associations that might elude detection through basic regression analysis of complex data due to subtley of the comorbidity links. 
+
+- PheMIME has the capability to identify disease phenotypes that might shared common genetic mechanisms. This is exemplified by our use of PheMIME to identify phenotype clusters enriched in pregnancy complications and myeloproliferative neoplasms (MPN). Specifically, we selected the phenotype of abnormal red blood cells, which is known to be enriched in carriers of the JAK2 mutation. This example demonstrates how PheMIME can effectively validate associations between genetic mutations and related disease phenotypes. 
+
+<!-- 1. Select phenotype of interest: **Abnormality of red blood cells**.  -->
+<!-- 2. Select the phenotypes among pregnancy complication group discovered in our exploratory analysis from the interactive table in the module of Reproducible Multimorbidities Exploration and click the Update Manhattan/Scatter button to incorporate them into the selection.  -->
+<!-- 3. Identify the most consistent clinical disease phenotypes based on comorbidity strength as shown in the Manhattan and Scatter plot through the module of Reproducible Multimorbidities Exploration. -->
+<!-- 4. Visualize the associations using associationSubgraphs. -->
+
+### Consistent clusters enriched in and strongly associated with MPN diseases across institutions
+
+```{r, echo = FALSE}
+embed_png("appendix_figure4.png")
+```
+
+### Consistent clusters enriched in pregnancy complications across institutions 
+ 
+- The reproducible and consistent subgraphs enriched in pregnancy complications exhibit across all three systems. 
+
+<!-- Hematopoietic phenotypes consistently appeared in the same subgraph as pregnancy complications across different systems. It has been discovered in the previous study that hemolytic anemias can lead to anemia during pregnancy, which may increase the risk of maternal complications. -->
+
+```{r, echo = FALSE}
+embed_png("appendix_figure5.png")
+```
+
+<!-- - We categorized individuals into two groups: those exhibiting at least one of the phenotypes presented in the subgraph of pregnancy complications and those who do not. Further statistical analysis was conducted to validate these findings and provide insights, as summarized in the below. Pregnant women displaying these co-occurring phenotypes at a higher frequency than expected may be at increased risk of complications. These disease predispositions potentially represent phenotype clusters beyond the myeloproliferative neoplasm (MPN) subtypes associated with the JAK2V617F mutation. Additionally, they may indicate potential disease predispositions among subjects with lower variant allele frequency (VAF) of the JAK2V617F mutation, aiding in the identification of potential novel genetic causes. -->
+
+<!-- ```{r,echo=FALSE, cache=FALSE, warning=FALSE,message=FALSE,fig.width = 6, fig.height = 6} -->
+<!-- ## extract pregnant women with the symptoms in subgraph at threshold 47.209 -->
+<!-- ## pregnant women were extracted based on the icd9 timeline data with icd9 code criteria -->
+<!-- ## symptoms were extracted based on the phecode timeline data with phecode -->
+<!-- # phecode_tm = aws.s3::s3readRDS("s3://bvehrdata/bv221/SD/grid_phecode_Aug2017_timelines.rds") -->
+<!-- # phecodes = paste(as.character(c(282.90,282.00,306.10)), collapse = "|") -->
+<!-- # dat_symptom = phecode_tm %>% -->
+<!-- #   filter(str_detect(phecode, phecodes)) %>% -->
+<!-- #   distinct(grid,.keep_all = T) %>% -->
+<!-- #   filter(grid %in% jak2_dat$grid[jak2_dat$pregnancy=="pregnant"]) #within pregnant women -->
+<!-- # jak2_dat = jak2_dat %>% -->
+<!-- #   mutate(symptoms_subgraph = ifelse(grid %in% dat_symptom$grid,"have subgraph phenotypes","does not have subgraph phenotypes")) -->
+<!-- # saveRDS(jak2_dat,file = "jak2_dat.rds") -->
+
+<!-- jak2_dat %>% -->
+<!--   dplyr::filter(pregnancy=="pregnant") %>% -->
+<!--   mutate(symptoms_subgraph = factor(symptoms_subgraph,levels=c("have subgraph phenotypes","does not have subgraph phenotypes"))) %>% -->
+<!--   mutate(symptoms_subgraph = ifelse(symptoms_subgraph == "have subgraph phenotypes","Women with RBC abnormality co-occurring phenotypes","Women without RBC abnormality co-occurring phenotypes")) %>% -->
+<!--   dplyr::select(pregnancy_complications,symptoms_subgraph) %>% -->
+<!--   tbl_summary(by = pregnancy_complications, missing = "no") %>% -->
+<!--   add_difference(test = everything()~ or_fun) %>% -->
+<!--   modify_header(estimate ~ "**Odds Ratio**") -->
+
+<!-- ``` -->
+
+
+
+
+
+<!-- ### Consistently identified clusters capture co-occurring phenotypes beyond the strongest associated phenotypes. -->
+
+<!-- - We noticed phenotypes in the consistent subtype enriched in pregnancy complications aross multiple institutions are not the strongest associated phenotypes with the **abnormality of red blood cells**, which indicates that only a subset of individuals with abnormality of red blood cells are related to JAK2 mutation. Besides, this approach not only validates these findings on a broader scale but also identifies associations that might elude detection through basic regression analysis of complex data due to subtlety of the comorbidity links. -->
+
+<!-- - We found that JAK2 carriers have higher risk of having the co-occurring phenotypes than the JAK2 non-carriers, which strengthen the potential that JAK2 mutation may lead to the occurrence of potential clinical phenotypes. -->
+
+<!-- ```{r,echo=FALSE, cache=FALSE, warning=FALSE,message=FALSE,fig.width = 6, fig.height = 6} -->
+<!-- ## extract pregnant women with the symptoms in subgraph at threshold 47.209 -->
+<!-- ## pregnant women were extracted based on the icd9 timeline data with icd9 code criteria -->
+<!-- ## symptoms were extracted based on the phecode timeline data with phecode -->
+<!-- # phecode_tm = aws.s3::s3readRDS("s3://bvehrdata/bv221/SD/grid_phecode_Aug2017_timelines.rds") -->
+<!-- # phecodes = paste(as.character(c(282.90,282.00)), collapse = "|") -->
+<!-- # dat_symptom = phecode_tm %>% -->
+<!-- #   filter(str_detect(phecode, phecodes)) %>% -->
+<!-- #   distinct(grid,.keep_all = T) %>% -->
+<!-- #   filter(grid %in% jak2_dat$grid[jak2_dat$pregnancy=="pregnant"]) #within pregnant women -->
+<!-- # jak2_dat = jak2_dat %>% -->
+<!-- #   mutate(symptoms_subgraph = ifelse(grid %in% dat_symptom$grid,"have subgraph phenotypes","does not have subgraph phenotypes")) -->
+<!-- # saveRDS(jak2_dat,file = "jak2_dat.rds") -->
+
+<!-- jak2_dat %>% -->
+<!--   # dplyr::filter(abnormal_redbloodcell=="abnormality of red blood cells") %>% -->
+<!--   mutate(symptoms_subgraph = factor(symptoms_subgraph,levels=c("have subgraph phenotypes","does not have subgraph phenotypes"))) %>% -->
+<!--   mutate(symptoms_subgraph = ifelse(symptoms_subgraph == "have subgraph phenotypes","Women with RBC abnormality co-occurring phenotypes","Women without RBC abnormality co-occurring phenotypes")) %>% -->
+<!--   dplyr::select(symptoms_subgraph,group) %>% -->
+<!--   tbl_summary(by = symptoms_subgraph, missing = "no") %>% -->
+<!--   add_difference(test = everything()~ or_fun) %>% -->
+<!--   modify_header(estimate ~ "**Odds Ratio**") -->
+
+<!-- ``` -->
+
+<!-- - It can indicate associationSubgraph could identify specific subgroups of patients due to different biological mechanisms, which indicates the associationsubgraphs in PheMIME could identify subgroups of patients, and colors help researchers identify those subgraphs co-occurr very often with the selected disease, that is to identify subgroups of patients that highly co-occurr with the selected disease -->
+
+# References
+
+1. Zhang, S., Strayer, N., Vessels, T., Choi, K., Wang, G. W., Li, Y., Bejan, C. A., Hsi, R. S., Bick, A. G., Velez Edwards, D. R., Savona, M. R., Philips, E. J., Pulley, J., Self, W. H., Hopkins, W. C., Roden, D. M., Smoller, J. W., Ruderfer, D. M., & Xu, Y. (n.d.). PheMIME: An Interactive Web App and Knowledge Base for Phenome-Wide, Multi-Institutional Multimorbidity Analysis. https://doi.org/10.1101/2023.07.23.23293047
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

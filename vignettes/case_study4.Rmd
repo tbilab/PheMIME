@@ -1,0 +1,131 @@
+---
+title: "Shared Biological Mechanisms of Cancers Associated with Schizophrenia"
+author: Siwei Zhang
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+  style_switcher: false
+  thumbnails: no
+  lightbox: yes
+  gallery: no
+  highlight: tango
+  use_bookdown: no
+  toc_depth: 6
+  fig_caption: yes
+  embed_fonts: no
+  keep_md: no
+  number_sections: yes
+bibliography: references.bib  
+csl: apa.csl
+---
+
+```{r, include = FALSE}
+# knitr::opts_chunk$set(
+#   collapse = TRUE,
+#   comment = "#>"
+# )
+embed_png <- function(image_title, width = "100%") {
+  knitr::asis_output(
+    glue::glue("<div style=\"text-align: center;\">",
+                 "<img src=\"{image_title}\" width={width} />",
+               "</div>")
+  )
+}
+```
+
+
+# Analysis of shared biological mechanisms based on PheMIME informed multimorbidities
+
+- In our case study of identifying robust disease clusters using **schizophrenia** as an example, PheMIME's analysis of disease phenotype information confirmed the enrichment of cancer-related disease clusters associated with schizophrenia. Utilizing a p-value cutoff of 0.05, we consistently identified significant comorbidities between schizophrenia and specific cancers, including **colon** and **breast cancer—conditions** that prior research indicates may have a slightly elevated risk among individuals with schizophrenia $^{1-4}$. Moreover, PheMIME revealed an unusual pattern with **melanoma** within the same subgraph, a connection seldom explored in previous studies, thus offering potential for novel insights and further investigation. 
+
+- This intriguing finding prompted us to explore whether the multimorbidities identified within the disease clusters share underlying biological mechanisms, such as common pathways. Consequently, we conducted further analyses to validate if the phenotypes discovery from PheMIME could uncover new associations that may be driven by shared biological mechanisms across these diseases.
+
+```{r, echo = FALSE}
+embed_png("schizopherenia_figure1.png")
+```
+
+### Identify the shared gene list 
+
+- [Open Targets Platform](https://platform.opentargets.org/) is an open-source platform that integrates data from various sources, including genetics, somatic mutations, expression analyses, drugs, animal models, and the literature. It employs robust pipelines to assess the association of a target with a disease, summarizing this relationship in a single score. 
+
+- We utilized this platform to generate gene lists for **schizophrenia, breast cancer, colorectal cancer, and melanoma** individually. Subsequently, we extracted the common genes between schizophrenia and each of the three cancers. We then focused on common genes that not only appeared in both schizophrenia and a specific cancer but also scored highly for both conditions, ensuring the relevance and potential significance of these genetic associations.
+
+### Identify the shared biological mechanisms
+
+- [Metascape](https://metascape.org/gp/index.html#/main/step1) is an online resource that providing comprehensive tools to decode gene lists, it integrates functional enrichment, interactome analysis, gene annotation and membership search to leverage over 40 independent knowledgebases, simplifying the process of understanding biological mechanisms and networks associated with large sets of genes$^5$. 
+
+- The gene lists shared between schizophrenia and each one of the other conditions such as breast cancer, colorectal cancer, and melanoma were analyzed simultaneously using Metascape to elucidate the shared biological mechanisms among breast cancer, colorectal cancer, melanoma with schizophrenia.
+
+**PheMIME is capable of identifying novel disease associations due to shared mechanisms among multimorbidity diseases associated with schizophrenia**
+
+- It has been reported that approximately one-seventh of the genetic factors contributing to breast cancer are shared with schizophrenia$^4$. Although direct links between schizophrenia and colorectal cancer via shared genetic factors are limited, studies have indicated an increased risk of colorectal cancer in individuals with schizophrenia$^2$. In contrast, the association between melanoma and schizophrenia has not been extensively studied. 
+
+- The heatmap below reveals that **mitochondria** are enriched in both breast cancer and colorectal cancer, whereas melanoma does not share this enrichment. Instead, melanoma and schizophrenia show a common enrichment in monoamine pathways. It has been shown that **mitochondrial** dysregulation is a contributor to the development of schizophrenia in the previous study$^6$, which further reflect that **PheMIME**'s capability of capturing the known disease multimorbidities associated with schizophrenia that have common genetic factors.
+
+```{r, echo = FALSE}
+embed_png("heatmap_schizophrenia.png")
+```
+
+- From the pathway and enrichment analysis, it shows that melanoma and breast cancer shared many biological pathways, which warrant further investigation. This finding not only highlights the potential for novel research directions but also demonstrates **PheMIME**’s ability to uncover new associations driven by common biological mechanisms.
+
+```{r, echo = FALSE}
+embed_png("network_schizophrenia.png")
+```
+
+```{r, echo = FALSE}
+embed_png("table_schizophrenia.png")
+```
+
+- These findings suggest that the **novel findings** of multimorbidity associated with schizophrenia, as identified by **PheMIME**, may reveal the shared biological mechanisms, such as those between melanoma and breast cancer, potentially indicating an increased risk of schizophrenia in melanoma due to shared biological pathways.
+
+
+<!-- # PheMIME identifies novel disease associations lacking genetic risk with Schizophrenia and with distinct biological mechanisms among Schizophrenia multimorbidities -->
+
+<!-- - In our companion study$^7$, we identified several novel disease associations that lack shared genetic risk with schizophrenia. In our case study of identifying robust disease clusters using **schizophrenia**, PheMIME analysis found consistent presence of disease cluster that highly co-occurred with schizophrenia are enriched in Viral hepatitis B and C. -->
+
+<!-- ```{r, echo = FALSE} -->
+<!-- embed_png("schizophrenia_hepatitis.png") -->
+<!-- ``` -->
+
+<!-- - We further investigate if the shared biological mechanisms with schizophrenia and Viral Hepatitis B overlap with those between schizophrenia and Viral Hepatitis C. The below analysis reveal that Viral Hepatitis B and Viral Hepatitis C have distinct biological mechanisms with Schizophrenia. -->
+
+<!-- ```{r, echo = FALSE} -->
+<!-- embed_png("heatmap_hepatitisBC.png") -->
+<!-- ``` -->
+
+<!-- ```{r, echo = FALSE} -->
+<!-- embed_png("table_hepatitisBC.png") -->
+<!-- ``` -->
+
+<!-- ```{r, echo = FALSE} -->
+<!-- embed_png("network_hepatitisBC.png") -->
+<!-- ``` -->
+
+# Reference
+
+1. Hippisley-Cox, J., Vinogradova, Y., Coupland, C., & Parker, C. (2007). Risk of Malignancy in Patients With Schizophrenia or Bipolar Disorder Nested Case-Control Study. In Arch Gen Psychiatry (Vol. 64, Issue 12).
+
+2. Kim, S., & Nam, S. (2023). The causal relationship of colorectal cancer on schizophrenia: A Mendelian randomization study. Medicine (United States), 102(40), E35517. https://doi.org/10.1097/MD.0000000000035517
+
+3. Wang, Y., Cao, Y., Huang, X., Yu, T., Wei, Z., McGrath, J., Xu, F., Bi, Y., Li, X., Yang, F., Li, W., Zou, X., Peng, Z., Xiao, Y., Zhang, Y., He, L., & He, G. (2016). Allele-specific expression of mutated in colorectal cancer (MCC) gene and alternative susceptibility to colorectal cancer in schizophrenia. Scientific Reports, 6. https://doi.org/10.1038/srep26688
+
+4. Lu, D., Song, J., Lu, Y., Fall, K., Chen, X., Fang, F., Landén, M., Hultman, C. M., Czene, K., Sullivan, P., Tamimi, R. M., & Valdimarsdóttir, U. A. (2020). A shared genetic contribution to breast cancer and schizophrenia. Nature Communications, 11(1). https://doi.org/10.1038/s41467-020-18492-8
+
+5. Zhou, Y., Zhou, B., Pache, L., Chang, M., Khodabakhshi, A. H., Tanaseichuk, O., Benner, C., & Chanda, S. K. (2019). Metascape provides a biologist-oriented resource for the analysis of systems-level datasets. Nature Communications, 10(1). https://doi.org/10.1038/s41467-019-09234-6
+
+6. Purcell, R. H., Sefik, E., Werner, E., King, A. T., Mosley, T. J., Merritt-Garza, M. E., Chopra, P., McEachin, Z. T., Karne, S., Raj, N., Vaglio, B. J., Sullivan, D., Firestein, B. L., Tilahun, K., Robinette, M. I., Warren, S. T., Wen, Z., Faundez, V., Sloan, S. A., … Mulle, J. G. (2023). Cross-species analysis identifies mitochondrial dysregulation as a functional consequence of the schizophrenia-associated 3q29 deletion. https://www.science.org
+
+7. Vessels, T., Strayer, N., Lee, H., Choi, K. W., Zhang, S., Han, L., Morley, T. J., Smoller, J. W., Xu, Y., & Ruderfer, D. M. (2024). Integrating electronic health records and polygenic risk to identify genetically unrelated comorbidities of schizophrenia that might be modifiable. Biological Psychiatry Global Open Science, 100297. https://doi.org/10.1016/j.bpsgos.2024.100297
+
+
+
+
+
+
+
+
+
+
+
+
+

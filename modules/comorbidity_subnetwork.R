@@ -12,7 +12,7 @@ comorbidity_subnetwork = function(comorbidities,brushed_points,z_institution,cod
   node_info = tibble(id = unique(c(association_pairs$a,association_pairs$b))) %>%
     left_join(.,phecode_def %>% dplyr::select(phecode,description,group,color) %>% dplyr::rename(id=description),by="id") %>%
     arrange(group) %>%
-    mutate(color = ifelse((phecode %in% brushed_points) | (id %in% code_description()),color,"#DEDEDE"))%>%
+    mutate(color = ifelse((phecode %in% brushed_points) | (id %in% code_description),color,"#DEDEDE"))%>%
     mutate(color = factor(color)) %>%
     arrange(color)
 
@@ -32,8 +32,8 @@ comorbidity_subnetwork = function(comorbidities,brushed_points,z_institution,cod
       node_info = node_info,
       subgraph_results = subgraphs,
       trim_subgraph_results = TRUE
-      ,
-      pinned_node = code_description()
+      # ,
+      # pinned_node = code_description
     )
 
   }
